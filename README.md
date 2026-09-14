@@ -7,7 +7,8 @@
 Правило, по которому пишутся инструкции, — `~/Projects/github/m_pashka/ai/rules/user-instructions.md`.
 Главное из него: что можно заскриптовать — скриптуется, здесь только то, что остаётся рукам.
 
-Репозиторий — `git@github.com:mpashka/instructions.git`, приватный.
+Репозиторий — `git@github.com:mpashka/instructions.git`, **публичный**: ничего рабочего, личного и
+секретного.
 
 ## Раскладка
 
