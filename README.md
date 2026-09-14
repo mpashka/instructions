@@ -23,3 +23,4 @@
 ## Инструкции
 
 - [llm-chat-answer.md](llm-chat-answer.md) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
+- [cloudflare-web-analytics.md](cloudflare-web-analytics.md) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
