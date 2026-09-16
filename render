@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""Рендерер инструкций: шаблон + файл значений → готовая инструкция вне git.
+
+    render <значения.yaml> [шаблон ...]     собрать (без шаблонов — все из файла значений)
+    render --clean [шаблон ...]             затереть и удалить собранное (без шаблонов — всё)
+
+Устройство и формат файлов — README.md рядом.
+"""
+import argparse
+import html
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+import yaml
+
+REPO = Path(__file__).resolve().parent
+DEFAULT_OUT = Path("~/Projects/home/secrets-out/instructions").expanduser()
+FIELDS_FILE = "fields.yaml"
+TEMPLATE_FILES = ("instruction.md", "instruction.html")
+PLACEHOLDER = re.compile(r"\{\{\s*([a-z][a-z0-9_]*)\s*\}\}")
+OUT_README = """# Собранные инструкции
+
+Готовые инструкции для человека, собранные командой `{render}` из шаблонов и файлов значений.
+В файлах бывают секреты открытым текстом: ИИ-агент их не читает, человек открывает сам.
+После использования — `{render} --clean <шаблон>`; собрать заново — `{render} <значения.yaml> <шаблон>`.
+"""
+TEMPLATE_NOTE = re.compile(r"<!-- template-note:begin -->.*?<!-- template-note:end -->\n?", re.S)
+
+
+class RenderError(Exception):
+    pass
+
+
+def view_vault(path: Path) -> str:
+    # cwd — каталог vault-файла: там нет своего ansible.cfg, и пароль берётся из ~/.ansible.cfg.
+    # Ключ --vault-password-file не передаётся: он добавил бы второй источник пароля.
+    try:
+        result = subprocess.run(["ansible-vault", "view", str(path)], cwd=path.parent,
+                                stdin=subprocess.DEVNULL, capture_output=True, text=True)
+    except FileNotFoundError:
+        raise RenderError("нет программы ansible-vault: поставь ansible (пакет ansible-core)")
+    if result.returncode != 0:
+        raise RenderError(f"ansible-vault не расшифровал {path}: {result.stderr.strip()}")
+    return result.stdout
+
+
+class VaultReader:
+    def __init__(self, view=view_vault):
+        self._view = view
+        self._cache = {}
+
+    def get(self, path: Path, key: str) -> str:
+        if path not in self._cache:
+            if not path.is_file():
+                raise RenderError(f"нет vault-файла {path}")
+            self._cache[path] = yaml.safe_load(self._view(path)) or {}
+        content = self._cache[path]
+        if key not in content:
+            raise RenderError(f"в vault-файле {path} нет ключа {key}")
+        return str(content[key])
+
+
+def load_yaml(path: Path) -> dict:
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        raise RenderError(f"нет файла {path}")
+    except yaml.YAMLError as e:
+        raise RenderError(f"{path} — не YAML: {e}")
+    if not isinstance(data, dict):
+        raise RenderError(f"{path}: ожидался словарь на верхнем уровне")
+    return data
+
+
+def template_dir(name: str) -> Path:
+    path = REPO / name
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name) or not (path / FIELDS_FILE).is_file():
+        known = ", ".join(list_templates()) or "—"
+        raise RenderError(f"нет шаблона {name}; есть: {known}")
+    return path
+
+
+def list_templates() -> list:
+    return sorted(p.parent.name for p in REPO.glob(f"*/{FIELDS_FILE}"))
+
+
+def read_template(name: str):
+    directory = template_dir(name)
+    declared = load_yaml(directory / FIELDS_FILE).get("fields") or {}
+    files = {f: (directory / f).read_text(encoding="utf-8")
+             for f in TEMPLATE_FILES if (directory / f).is_file()}
+    if not files:
+        raise RenderError(f"в шаблоне {name} нет ни одного из {', '.join(TEMPLATE_FILES)}")
+    used = {m for text in files.values() for m in PLACEHOLDER.findall(text)}
+    if used - set(declared):
+        raise RenderError(f"шаблон {name} использует поля, не объявленные в {FIELDS_FILE}: "
+                          f"{', '.join(sorted(used - set(declared)))}")
+    if set(declared) - used:
+        raise RenderError(f"шаблон {name} объявляет поля, которых нет в тексте: "
+                          f"{', '.join(sorted(set(declared) - used))}")
+    return declared, files
+
+
+def resolve_values(name: str, declared: dict, raw: dict, values_file: Path, vault: VaultReader):
+    raw = raw or {}
+    unknown = set(raw) - set(declared)
+    if unknown:
+        raise RenderError(f"{values_file}, шаблон {name}: неизвестные поля {', '.join(sorted(unknown))}; "
+                          f"шаблон ждёт: {', '.join(sorted(declared)) or '—'}")
+    missing = [f for f in declared if raw.get(f) in (None, "")]
+    if missing:
+        raise RenderError(f"{values_file}, шаблон {name}: не заполнены поля {', '.join(missing)}")
+    values, from_vault = {}, []
+    for field, value in raw.items():
+        if isinstance(value, dict):
+            if set(value) != {"vault", "key"}:
+                raise RenderError(f"{values_file}, поле {field}: ссылка на секрет — "
+                                  "{vault: <файл>, key: <ключ>}")
+            path = Path(os.path.expanduser(str(value["vault"])))
+            if not path.is_absolute():
+                path = values_file.parent / path
+            values[field] = vault.get(path.resolve(), str(value["key"]))
+            from_vault.append(field)
+        elif isinstance(value, (str, int, float)):
+            values[field] = str(value)
+        else:
+            raise RenderError(f"{values_file}, поле {field}: значение — строка или ссылка на vault")
+    return values, from_vault
+
+
+def substitute(text: str, values: dict, escape) -> str:
+    text = TEMPLATE_NOTE.sub("", text)
+    return PLACEHOLDER.sub(lambda m: escape(values[m.group(1)]), text)
+
+
+def write_private(path: Path, text: str):
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        os.fchmod(f.fileno(), 0o600)
+        f.write(text)
+
+
+def make_private_dir(path: Path):
+    path.mkdir(parents=True, exist_ok=True)
+    path.chmod(0o700)
+
+
+def wipe_file(path: Path):
+    size = path.stat().st_size
+    with open(path, "r+b") as f:
+        f.write(b"\0" * size)
+        f.flush()
+        os.fsync(f.fileno())
+    path.unlink()
+
+
+def wipe_dir(path: Path):
+    for child in path.iterdir():
+        if child.is_dir() and not child.is_symlink():
+            wipe_dir(child)
+        elif child.is_file() and not child.is_symlink():
+            wipe_file(child)
+        else:
+            child.unlink()
+    path.rmdir()
+
+
+def render(values_file: Path, names: list, out_root: Path, vault: VaultReader) -> list:
+    values_file = values_file.resolve()
+    sections = load_yaml(values_file)
+    names = names or list(sections)
+    if not names:
+        raise RenderError(f"{values_file}: пусто — ни одного шаблона")
+    prepared = []
+    for name in names:
+        if name not in sections:
+            raise RenderError(f"{values_file}: нет раздела {name}; есть: {', '.join(sections) or '—'}")
+        declared, files = read_template(name)
+        values, from_vault = resolve_values(name, declared, sections[name], values_file, vault)
+        prepared.append((name, files, values, from_vault))
+    make_private_dir(out_root)
+    write_private(out_root / "README.md", OUT_README.format(render=REPO / "render"))
+    report = []
+    for name, files, values, from_vault in prepared:
+        target = out_root / name
+        if target.exists():
+            wipe_dir(target)
+        make_private_dir(target)
+        written = []
+        for file_name, text in files.items():
+            escape = html.escape if file_name.endswith(".html") else str
+            write_private(target / file_name, substitute(text, values, escape))
+            written.append(target / file_name)
+        report.append((name, written, sorted(values), sorted(from_vault)))
+    return report
+
+
+def clean(names: list, out_root: Path) -> list:
+    if not out_root.is_dir():
+        return []
+    targets = [out_root / n for n in names] if names else sorted(p for p in out_root.iterdir() if p.is_dir())
+    removed = []
+    for target in targets:
+        if target.is_dir():
+            wipe_dir(target)
+            removed.append(target)
+    return removed
+
+
+def main(argv=None, vault=None) -> int:
+    parser = argparse.ArgumentParser(prog="render", description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--clean", action="store_true", help="затереть и удалить собранные инструкции")
+    parser.add_argument("--out", type=Path, default=Path(os.environ.get("INSTRUCTIONS_OUT", DEFAULT_OUT)),
+                        help=f"куда собирать (по умолчанию {DEFAULT_OUT}, или $INSTRUCTIONS_OUT)")
+    parser.add_argument("args", nargs="*", help="файл значений и шаблоны; для --clean — только шаблоны")
+    options = parser.parse_args(argv)
+    out_root = options.out.expanduser()
+    try:
+        if options.clean:
+            removed = clean(options.args, out_root)
+            print("удалено: " + (", ".join(map(str, removed)) if removed else "нечего"))
+            return 0
+        if not options.args:
+            parser.error("нужен файл значений")
+        values_file, *names = options.args
+        report = render(Path(values_file), names, out_root, vault or VaultReader())
+        for name, written, fields, from_vault in report:
+            print(f"{name}:")
+            for path in written:
+                print(f"  {path}")
+            print(f"  поля: {', '.join(f + (' (vault)' if f in from_vault else '') for f in fields) or '—'}")
+        out_flag = "" if out_root == DEFAULT_OUT else f" --out {out_root}"
+        print(f"после использования: {REPO / 'render'}{out_flag} --clean {' '.join(r[0] for r in report)}")
+        return 0
+    except RenderError as e:
+        print(f"render: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

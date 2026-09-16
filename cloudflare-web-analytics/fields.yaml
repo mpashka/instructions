@@ -1,0 +1,5 @@
+title: завести сайт в Cloudflare Web Analytics и получить токен счётчика
+fields:
+  hostname:
+    about: домен сайта без https:// и без пути
+    example: example.github.io

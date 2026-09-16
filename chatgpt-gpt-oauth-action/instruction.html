@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPT «{{gpt_name}}»: действие с входом по OAuth</title>
+<style>
+  :root { --bg:#f6f6f4; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#d6d6d0;
+          --accent:#2f6fd6; --hit:#e8f0ff; --warn:#fff3c4; --warn-ink:#6a5200; --opt:#e3efe3; --opt-ink:#2f5d2f;
+          --screen:#fbfbfa; --bad:#b3261e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1b1a; --card:#262624; --ink:#ecece8; --muted:#a3a39c; --line:#44443f;
+            --accent:#6fa0ff; --hit:#22314d; --warn:#4a3f12; --warn-ink:#ffe7a0; --opt:#23402a; --opt-ink:#bfe3c3;
+            --screen:#1f1f1e; --bad:#ff8a80; }
+  }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:820px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 8px; }
+  .meta { color:var(--muted); font-size:13px; }
+  .template-note, .warn { background:var(--warn); color:var(--warn-ink); border-radius:8px; padding:10px 14px; margin:14px 0; }
+  section.step { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:18px 0; }
+  section.step > h2 { margin:0 0 6px; font-size:17px; }
+  section.step > h2 .n { display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center;
+                          border-radius:13px; background:var(--accent); color:#fff; font-size:14px; margin-right:6px; }
+  .screen { border:1px solid var(--line); border-radius:8px; background:var(--screen); margin:12px 0 4px; overflow:hidden; font-size:14px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between;
+         padding:8px 12px; border-bottom:1px solid var(--line); }
+  .bar .title { font-weight:600; }
+  .body { padding:12px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; }
+  .cols > div { padding:12px; min-width:0; }
+  .cols > div + div { border-left:1px solid var(--line); }
+  @media (max-width:600px) { .cols { grid-template-columns:1fr; } .cols > div + div { border-left:0; border-top:1px solid var(--line); } }
+  .tabs { display:flex; justify-content:center; gap:4px; margin-bottom:10px; }
+  .tab { padding:3px 14px; border-radius:6px; color:var(--muted); }
+  .tab.on { background:var(--line); color:var(--ink); }
+  .btn { display:inline-block; padding:4px 12px; border-radius:16px; border:1px solid var(--line); background:var(--card); }
+  .btn.main { background:var(--ink); color:var(--card); border-color:var(--ink); }
+  .fld { margin:10px 0; }
+  .fld > .label { font-size:13px; font-weight:600; }
+  .fld > .label small { font-weight:400; color:var(--muted); }
+  .input { display:flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:6px;
+           padding:5px 8px; min-height:22px; background:var(--card); }
+  .input .v { flex:1; min-width:0; font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  .input .empty { flex:1; color:var(--muted); }
+  .hit { outline:2px solid var(--accent); outline-offset:2px; background:var(--hit); border-radius:6px; }
+  .opt { font-size:12px; background:var(--opt); color:var(--opt-ink); padding:0 6px; border-radius:4px; margin-left:6px; font-weight:400; }
+  .gear { color:var(--muted); }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--line); }
+  .row:last-child { border-bottom:0; }
+  .mono { font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  button.copy { font:12px system-ui, sans-serif; padding:2px 8px; border-radius:4px; border:1px solid var(--line);
+                background:var(--card); color:var(--ink); cursor:pointer; white-space:nowrap; }
+  button.copy.done { background:var(--opt); color:var(--opt-ink); }
+  .caption { color:var(--muted); font-size:13px; }
+  .say { margin:8px 0; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td, th { border-top:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  .table { overflow-x:auto; }
+  .red { color:var(--bad); }
+</style>
+</head>
+<body>
+<main>
+<!-- template-note:begin -->
+<div class="template-note">🚨 <b>Шаблон, а не инструкция.</b> <code>{{…}}</code> — места для значений; готовую инструкцию собирает <code>render</code> (README репозитория).</div>
+<!-- template-note:end -->
+<h1>GPT «{{gpt_name}}»: действие с входом по OAuth</h1>
+<p>Завести в ChatGPT приватный GPT, подключить к нему <b>действие</b> — вызовы API сайта {{action_domain}} — со входом по OAuth, получить <b>URL-адрес обратного вызова</b> и проверить вызов кнопкой «Тест». Нужен платный план ChatGPT (Plus и выше).</p>
+<p><b>ИИ-агент</b> — Claude, Codex или другой ИИ-агент, от которого ты получил эту инструкцию.</p>
+<div class="warn">🚨 В шаге 4 — <b>секрет клиента открытым текстом</b>. Он вводится только в поле ChatGPT: не пересылай его никому, в том числе ИИ-агенту, и не копируй в заметки. Файл временный — после проверки его удаляют.</div>
+<p class="meta">Интерфейс ChatGPT — русский; надписи сверены по описанию экрана 2026-09-16. Рисунки упрощены: важны расположение и надписи, а не вид. Обведено то, что нажимать или заполнять. Кнопка «Копировать» рядом со значением кладёт его в буфер обмена.</p>
+
+<section class="step" id="open">
+  <h2><span class="n">1</span>Открыть конструктор GPT</h2>
+  <p>Открой <span class="mono">https://chatgpt.com/gpts/editor</span>. Или: слева в ChatGPT «GPT» → справа вверху «+ Создать».</p>
+</section>
+
+<section class="step" id="name">
+  <h2><span class="n">2</span>Вкладка «Конфигурация», имя</h2>
+  <div class="screen">
+    <div class="bar"><span>←&nbsp; Новый GPT</span><span class="btn main">Создать</span></div>
+    <div class="cols">
+      <div>
+        <div class="tabs"><span class="tab">Создать</span><span class="tab on hit">Конфигурация</span></div>
+        <div class="fld hit"><div class="label">Имя</div><div class="input"><span class="v">{{gpt_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+        <div class="fld"><div class="label">Описание <span class="opt">можно пусто</span></div><div class="input"><span class="empty"></span></div></div>
+        <div class="fld"><div class="label">Инструкции <span class="opt">можно пусто</span></div><div class="input"><span class="empty"></span></div></div>
+        <div class="caption">… «Начало разговора», «Знания», «Возможности» — не трогай</div>
+      </div>
+      <div><div class="caption">Предварительный просмотр</div></div>
+    </div>
+  </div>
+  <p>Сверху переключись на вкладку «Конфигурация» и введи в «Имя» значение с рисунка. Остальные поля можно оставить пустыми.</p>
+</section>
+
+<section class="step" id="new-action">
+  <h2><span class="n">3</span>«Создать новое действие»</h2>
+  <div class="screen">
+    <div class="bar"><span class="title">Конфигурация</span></div>
+    <div class="body">
+      <div class="caption">… в самом низу вкладки</div>
+      <div class="fld"><div class="label">Действия</div><span class="btn hit">Создать новое действие</span></div>
+    </div>
+  </div>
+  <p>Прокрути вкладку «Конфигурация» вниз до блока «Действия» и нажми «Создать новое действие». Откроется окно действия: «Аутентификация», «Схема», «Доступные действия».</p>
+</section>
+
+<section class="step" id="auth">
+  <h2><span class="n">4</span>«Аутентификация» → OAuth</h2>
+  <div class="screen">
+    <div class="bar"><span>←&nbsp; Изменить действия</span></div>
+    <div class="body">
+      <div class="fld"><div class="label">Аутентификация</div><div class="input hit"><span class="empty">Нет</span><span class="gear">⚙</span></div></div>
+    </div>
+  </div>
+  <p>Нажми поле «Аутентификация» (шестерёнка справа). В окне выбери тип <b>OAuth</b> и заполни:</p>
+  <div class="screen">
+    <div class="bar"><span class="title">Аутентификация</span><span class="gear">✕</span></div>
+    <div class="body">
+      <div class="fld"><div class="label">Тип аутентификации</div><div class="row"><span>○ Нет</span><span>○ Ключ API</span><span class="hit">◉ OAuth</span></div></div>
+      <div class="fld"><div class="label">Идентификатор клиента <small>Client ID</small></div><div class="input hit"><span class="v">{{client_id}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">Секрет клиента <small>Client Secret</small></div><div class="input hit"><span class="v">{{client_secret}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">URL-адрес авторизации <small>Authorization URL</small></div><div class="input hit"><span class="v">{{authorization_url}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">URL-адрес токена <small>Token URL</small></div><div class="input hit"><span class="v">{{token_url}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">Область <small>Scope</small></div><div class="input hit"><span class="v">{{scope}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">Метод обмена токенами <small>Token Exchange Method</small></div><div class="input hit"><span class="v">{{token_exchange}}</span></div></div>
+      <div style="text-align:right"><span class="btn main hit">Сохранить</span></div>
+    </div>
+  </div>
+  <p class="caption">Надпись поля на экране может отличаться словом — узнавай по порядку и по английскому имени. Без идентификатора и секрета окно не сохраняется.</p>
+</section>
+
+<section class="step" id="schema">
+  <h2><span class="n">5</span>«Схема» → «Импортировать из URL-адреса»</h2>
+  <div class="screen">
+    <div class="body">
+      <div class="fld"><div class="label">Схема</div>
+        <div style="text-align:right"><span class="btn hit">Импортировать из URL-адреса</span></div>
+        <div class="input hit" style="margin-top:6px"><span class="v">{{schema_url}}</span><button class="copy" type="button">Копировать</button></div>
+        <div style="text-align:right; margin-top:6px"><span class="btn main hit">Импортировать</span></div>
+      </div>
+      <div class="fld"><div class="label">Доступные действия</div>
+        <div class="row"><span class="mono">{{test_operation}}</span><span class="btn">Тест</span></div>
+        <div class="row"><span class="caption">… остальные операции</span></div>
+      </div>
+      <div class="fld"><div class="label">Политика конфиденциальности <span class="opt">можно пусто</span></div><div class="input"><span class="empty"></span></div></div>
+    </div>
+  </div>
+  <p>Нажми «Импортировать из URL-адреса», вставь адрес схемы, «Импортировать». Ниже, в «Доступных действиях», должен появиться список операций. «Тест» пока не нажимай: до шага 9 он падает, и это нормально.</p>
+</section>
+
+<section class="step" id="save">
+  <h2><span class="n">6</span>Сохранить GPT только для себя</h2>
+  <div class="screen">
+    <div class="bar"><span>←&nbsp; {{gpt_name}}</span><span class="btn main hit">Создать</span></div>
+    <div class="body">
+      <div class="fld"><div class="label">Поделиться GPT</div>
+        <div class="row"><span class="hit">◉ Только я</span></div>
+        <div class="row"><span class="caption">○ Все, у кого есть ссылка</span></div>
+        <div class="row"><span class="caption">○ Магазин GPT</span></div>
+      </div>
+      <div style="text-align:right"><span class="btn main hit">Сохранить</span></div>
+    </div>
+  </div>
+  <p>Вернись из окна действия стрелкой «←» и нажми справа вверху «Создать» (у уже сохранённого GPT кнопка называется «Обновить»). Выбери «Только я», «Сохранить». В магазин GPT не публикуй.</p>
+</section>
+
+<section class="step" id="callback">
+  <h2><span class="n">7</span>Скопировать URL-адрес обратного вызова</h2>
+  <div class="screen">
+    <div class="bar"><span>←&nbsp; {{gpt_name}}</span><span class="btn main">Обновить</span></div>
+    <div class="body">
+      <div class="tabs"><span class="tab">Создать</span><span class="tab on hit">Конфигурация</span></div>
+      <div class="caption">… в самом низу вкладки</div>
+      <div class="fld"><div class="label">Действия</div>
+        <div class="input"><span class="v">{{action_domain}}</span><span class="gear">⚙</span></div>
+        <div class="caption" style="margin-top:8px">URL-адрес обратного вызова</div>
+        <div class="input hit"><span class="v">https://chat.openai.com/aip/g-…/oauth/callback</span><span class="btn">⧉</span></div>
+      </div>
+    </div>
+  </div>
+  <p>Открой вкладку «Конфигурация» и прокрути вниз. В блоке «Действия» — поле с доменом {{action_domain}}, под ним «URL-адрес обратного вызова». Нажми кнопку копирования справа от адреса. Адреса нет — обнови страницу браузера.</p>
+</section>
+
+<section class="step" id="send-callback">
+  <h2><span class="n">8</span>Отправить адрес ИИ-агенту</h2>
+  <p>Напиши ИИ-агенту одну строку: скопируй начало кнопкой, после двоеточия вставь адрес из шага 7 целиком.</p>
+  <div class="input say"><span class="v">callback URL: </span><button class="copy" type="button">Копировать</button></div>
+  <p>Дождись от ИИ-агента ответа, что можно проверять, и переходи к шагу 9.</p>
+</section>
+
+<section class="step" id="test">
+  <h2><span class="n">9</span>Проверить: «Тест» и вход</h2>
+  <div class="screen">
+    <div class="cols">
+      <div>
+        <div class="tabs"><span class="tab">Создать</span><span class="tab on">Конфигурация</span></div>
+        <div class="fld"><div class="label">Действия</div><div class="input hit"><span class="v">{{action_domain}}</span><span class="gear">⚙</span></div></div>
+        <div class="caption">↓ открылось окно действия</div>
+        <div class="fld"><div class="label">Доступные действия</div>
+          <div class="row"><span class="mono">{{test_operation}}</span><span class="btn hit">Тест</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="caption">Предварительный просмотр</div>
+        <p style="text-align:center"><span class="btn main hit">Войти в систему с {{action_domain}}</span></p>
+      </div>
+    </div>
+  </div>
+  <ol>
+    <li>На вкладке «Конфигурация» в блоке «Действия» нажми поле {{action_domain}} — откроется окно действия.</li>
+    <li>В «Доступных действиях» у строки <span class="mono">{{test_operation}}</span> нажми «Тест».</li>
+    <li>Справа, в «Предварительном просмотре», появится кнопка «Войти в систему с {{action_domain}}» — нажми её.</li>
+    <li>Откроется вход на {{action_domain}} (может попросить войти через Google) — войди. Браузер вернётся в ChatGPT.</li>
+    <li>В «Предварительном просмотре» появится ответ операции.</li>
+  </ol>
+</section>
+
+<section class="step" id="result">
+  <h2>Как понять, что удалось</h2>
+  <p>Готово, когда «Тест» вернул ответ операции, а не ошибку. Тогда напиши ИИ-агенту:</p>
+  <div class="input say"><span class="v">Тест {{test_operation}} прошёл</span><button class="copy" type="button">Копировать</button></div>
+  <p>Если нет:</p>
+  <div class="table"><table>
+    <tr><th>Что видно</th><th>Что делать</th></tr>
+    <tr><td>под схемой красным <span class="mono red">In components section, schemas subsection is not an object</span> или другая ошибка разбора</td><td>перешли текст ошибки ИИ-агенту; после его ответа — шаг 5 заново</td></tr>
+    <tr><td>сайт при входе ругается на <span class="mono">redirect_uri</span></td><td>шаги 7–8 заново: скопируй адрес ещё раз, целиком</td></tr>
+    <tr><td>после входа ошибка токена, <span class="mono">invalid_client</span></td><td>шаг 4 заново: секрет — кнопкой «Копировать», «Сохранить», затем «Обновить» справа вверху</td></tr>
+    <tr><td>действие удалено и создано заново</td><td>адрес обратного вызова поменялся — шаги 7–8 с новым адресом</td></tr>
+    <tr><td>любая другая ошибка</td><td>перешли ИИ-агенту её текст целиком, включая код. Секрет не пересылай</td></tr>
+  </table></div>
+</section>
+</main>
+<script>
+  document.querySelectorAll("button.copy").forEach(button => button.addEventListener("click", async () => {
+    const value = button.previousElementSibling;
+    try {
+      await navigator.clipboard.writeText(value.textContent);
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(value);
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand("copy");
+      selection.removeAllRanges();
+    }
+    button.textContent = "Скопировано";
+    button.classList.add("done");
+    setTimeout(() => { button.textContent = "Копировать"; button.classList.remove("done"); }, 1500);
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+title: приватный GPT с действием на OAuth — URL-адрес обратного вызова и проверка «Тест»
+fields:
+  gpt_name:
+    about: имя GPT
+    example: Learning API
+  action_domain:
+    about: домен API без https://, как ChatGPT показывает его в блоке «Действия»
+    example: api.example.org
+  client_id:
+    about: идентификатор OAuth-клиента
+    example: example-gpt-actions
+  client_secret:
+    about: секрет OAuth-клиента — только ссылкой на vault
+    example: example-secret
+  authorization_url:
+    about: адрес авторизации сервера
+    example: https://api.example.org/oauth2/authorize
+  token_url:
+    about: адрес выдачи токена
+    example: https://api.example.org/oauth2/token
+  scope:
+    about: права через пробел
+    example: read write
+  token_exchange:
+    about: надпись варианта «Метод обмена токенами», который выбрать
+    example: POST-запрос (по умолчанию)
+  schema_url:
+    about: адрес схемы OpenAPI
+    example: https://api.example.org/openapi.yaml
+  test_operation:
+    about: operationId операции для проверки «Тест»
+    example: listItems

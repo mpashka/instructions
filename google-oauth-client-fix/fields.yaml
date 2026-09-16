@@ -1,0 +1,11 @@
+title: вход через Google отклонён — адрес возврата и тестовые пользователи
+fields:
+  site:
+    about: адрес сайта, на котором не работает вход
+    example: https://app.example.org/
+  google_client_id:
+    about: Client ID OAuth-клиента Google (по нему клиент находится в списке)
+    example: 123456789012-abc.apps.googleusercontent.com
+  redirect_uri:
+    about: адрес возврата ровно так, как его шлёт сайт
+    example: https://app.example.org/login/oauth2/code/google

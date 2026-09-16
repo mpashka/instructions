@@ -1,0 +1,11 @@
+title: вставить готовый промпт в чат нейросети и сохранить ответ файлом
+fields:
+  prompt_file:
+    about: файл с готовым промптом, полный путь
+    example: ~/tasks/promo/ready/facebook.md
+  answer_dir:
+    about: каталог для ответов, полный путь
+    example: ~/tasks/promo/answers/facebook/
+  models:
+    about: в каких чатах прогнать, через запятую
+    example: ChatGPT, DeepSeek, Claude
