@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>«{{app_name}}» на Xiaomi: установка по USB</title>
+<style>
+  :root { --bg:#f6f6f4; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#d6d6d0;
+          --accent:#2f6fd6; --hit:#e8f0ff; --warn:#fff3c4; --warn-ink:#6a5200; --opt:#e3efe3; --opt-ink:#2f5d2f;
+          --screen:#fbfbfa; --go:#1f7a3a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1b1a; --card:#262624; --ink:#ecece8; --muted:#a3a39c; --line:#44443f;
+            --accent:#6fa0ff; --hit:#22314d; --warn:#4a3f12; --warn-ink:#ffe7a0; --opt:#23402a; --opt-ink:#bfe3c3;
+            --screen:#1f1f1e; --go:#5cc47c; }
+  }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:820px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 8px; }
+  .meta { color:var(--muted); font-size:13px; }
+  .template-note { background:var(--warn); color:var(--warn-ink); border-radius:8px; padding:10px 14px; margin:14px 0; }
+  section.step { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:18px 0; }
+  section.step > h2 { margin:0 0 6px; font-size:17px; }
+  section.step > h2 .n { display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center;
+                          border-radius:13px; background:var(--accent); color:#fff; font-size:14px; margin-right:6px; }
+  .phones { display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; }
+  .phone { width:240px; max-width:100%; border:2px solid var(--line); border-radius:22px; background:var(--screen);
+           padding:14px 12px; font-size:14px; }
+  .phone .head { font-weight:600; margin-bottom:8px; }
+  .item { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--line); }
+  .item:last-child { border-bottom:0; }
+  .toggle { width:34px; height:18px; border-radius:9px; background:var(--line); position:relative; flex:none; }
+  .toggle.on { background:var(--accent); }
+  .toggle::after { content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:7px; background:#fff; }
+  .toggle.on::after { left:18px; }
+  .sheet { border:1px solid var(--line); border-radius:14px; background:var(--card); padding:12px; margin-top:40px; }
+  .sheet .q { font-weight:600; margin-bottom:6px; }
+  .buttons { display:flex; gap:8px; margin-top:12px; }
+  .buttons span { flex:1; text-align:center; padding:6px; border-radius:16px; border:1px solid var(--line); }
+  .buttons .go { color:var(--go); font-weight:600; }
+  .hit { outline:2px solid var(--accent); outline-offset:2px; background:var(--hit); border-radius:6px; }
+  .opt { font-size:12px; background:var(--opt); color:var(--opt-ink); padding:0 6px; border-radius:4px; margin-left:6px; font-weight:400; }
+  .caption { color:var(--muted); font-size:13px; }
+  .mono { font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  .input { display:flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:6px;
+           padding:5px 8px; background:var(--card); margin:6px 0; }
+  .input .v { flex:1; min-width:0; font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  button.copy { font:12px system-ui, sans-serif; padding:2px 8px; border-radius:4px; border:1px solid var(--line);
+                background:var(--card); color:var(--ink); cursor:pointer; white-space:nowrap; }
+  button.copy.done { background:var(--opt); color:var(--opt-ink); }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td, th { border-top:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  .table { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+<!-- template-note:begin -->
+<div class="template-note">🚨 <b>Шаблон, а не инструкция.</b> <code>{{…}}</code> — места для значений; готовую инструкцию собирает <code>render</code> (README репозитория).</div>
+<!-- template-note:end -->
+<h1>«{{app_name}}» на Xiaomi: установка по USB</h1>
+<p>ИИ-агент ставит приложение «{{app_name}}» на твой телефон Xiaomi с компьютера, по кабелю. Телефон требует подтвердить установку нажатием — это и есть твоя часть. Время — 2 минуты.</p>
+<p><b>ИИ-агент</b> — Claude, Codex или другой ИИ-агент, от которого ты получил эту инструкцию.</p>
+<p class="meta">Составлена 2026-09-16 по HyperOS 2, экраны нарисованы по памяти: если пункт называется иначе — ищи по смыслу. Обведено то, что нажимать.</p>
+
+<section class="step" id="connect">
+  <h2><span class="n">1</span>Подключить телефон</h2>
+  <p>Разблокируй телефон и подключи его кабелем к компьютеру. Спросит «Разрешить отладку по USB?» — отметь «Всегда разрешать с этого компьютера» и нажми «Разрешить». Режим разработчика на телефоне уже включён: без него ИИ-агент телефона не видит и сказал бы об этом сам.</p>
+</section>
+
+<section class="step" id="enable">
+  <h2><span class="n">2</span>Включить «Установка через USB» <span class="opt">один раз</span></h2>
+  <div class="phones">
+    <div class="phone">
+      <div class="head">‹ Для разработчиков</div>
+      <div class="item"><span>Отладка по USB</span><span class="toggle on"></span></div>
+      <div class="item hit"><span>Установка через USB</span><span class="toggle on"></span></div>
+      <div class="item"><span>Отладка по USB (настройки безопасности) <span class="opt">не нужна</span></span><span class="toggle"></span></div>
+    </div>
+  </div>
+  <p>«Настройки» → «Дополнительные настройки» → «Для разработчиков» → включи <b>«Установка через USB»</b>. Уже включено — переходи к шагу 3.</p>
+  <p class="caption">Телефон может попросить войти в аккаунт Xiaomi и держать SIM-карту в телефоне — это требование Xiaomi, обойти его нельзя. Удалось, если переключатель остался включённым после выхода из экрана.</p>
+</section>
+
+<section class="step" id="confirm">
+  <h2><span class="n">3</span>Подтвердить установку</h2>
+  <p>Напиши ИИ-агенту, что телефон готов, и держи его разблокированным перед собой:</p>
+  <div class="input"><span class="v">телефон подключён, ставь</span><button class="copy" type="button">Копировать</button></div>
+  <p>Через несколько секунд на телефоне появится окно — у тебя около 10 секунд:</p>
+  <div class="phones">
+    <div class="phone">
+      <div class="sheet">
+        <div class="q">Установить приложение через USB?</div>
+        <div>{{app_name}}</div>
+        <div class="buttons"><span>Отмена</span><span class="go hit">Установить (9)</span></div>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="sheet">
+        <div class="q">Проверка безопасности</div>
+        <div class="caption">приложение не из магазина…</div>
+        <div class="buttons"><span>Отмена</span><span class="go hit">Всё равно установить</span></div>
+      </div>
+      <div class="caption" style="margin-top:8px">может не появиться</div>
+    </div>
+  </div>
+  <p>Нажми <b>«Установить»</b>. Появилось второе окно проверки безопасности — <b>«Всё равно установить»</b>. Удалось, если ИИ-агент сообщил, что установка прошла.</p>
+</section>
+
+<section class="step" id="files">
+  <h2><span class="n">4</span>Если окно мелькает и закрывается само</h2>
+  <p>Так бывает на HyperOS. Напиши ИИ-агенту:</p>
+  <div class="input"><span class="v">окно закрывается само, положи APK в Download</span><button class="copy" type="button">Копировать</button></div>
+  <p>Когда ИИ-агент ответит, что файл на телефоне:</p>
+  <div class="phones">
+    <div class="phone">
+      <div class="head">‹ Download</div>
+      <div class="item hit"><span class="mono">{{apk_name}}</span></div>
+      <div class="item caption"><span>…</span></div>
+    </div>
+    <div class="phone">
+      <div class="sheet">
+        <div class="q">{{app_name}}</div>
+        <div class="caption">Обновить приложение?</div>
+        <div class="buttons"><span>Отмена</span><span class="go hit">Обновить</span></div>
+      </div>
+    </div>
+  </div>
+  <ol>
+    <li>Открой на телефоне «Файлы» (или «Проводник») → «Download».</li>
+    <li>Нажми на файл <span class="mono">{{apk_name}}</span>.</li>
+    <li>Нажми «Установить» (или «Обновить», если приложение уже стоит). Спросит разрешение ставить приложения из «Файлов» — разреши и вернись назад, если установка не продолжилась сама.</li>
+    <li>Удалось, если появилась кнопка «Открыть». Напиши ИИ-агенту:</li>
+  </ol>
+  <div class="input"><span class="v">поставил из Download</span><button class="copy" type="button">Копировать</button></div>
+</section>
+
+<section class="step" id="result">
+  <h2>Если не получилось</h2>
+  <div class="table"><table>
+    <tr><th>Что видно</th><th>Что делать</th></tr>
+    <tr><td>не успел нажать «Установить»</td><td>напиши ИИ-агенту <span class="mono">не успел, повтори</span> и повтори шаг 3</td></tr>
+    <tr><td>окна на телефоне не было вовсе</td><td>проверь шаг 2 и напиши ИИ-агенту <span class="mono">окна не было</span></td></tr>
+    <tr><td>«Приложение не установлено», «конфликт с существующим пакетом»</td><td>напиши ИИ-агенту этот текст дословно</td></tr>
+    <tr><td>любое другое сообщение</td><td>перешли ИИ-агенту его текст и номер шага</td></tr>
+  </table></div>
+</section>
+</main>
+<script>
+  document.querySelectorAll("button.copy").forEach(button => button.addEventListener("click", async () => {
+    const value = button.previousElementSibling;
+    try {
+      await navigator.clipboard.writeText(value.textContent);
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(value);
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand("copy");
+      selection.removeAllRanges();
+    }
+    button.textContent = "Скопировано";
+    button.classList.add("done");
+    setTimeout(() => { button.textContent = "Копировать"; button.classList.remove("done"); }, 1500);
+  }));
+</script>
+</body>
+</html>

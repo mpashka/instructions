@@ -79,7 +79,9 @@ chatgpt-gpt-oauth-action:
 ## Шаблоны
 
 - [chatgpt-gpt-oauth-action](chatgpt-gpt-oauth-action/) — приватный GPT с действием на OAuth: URL-адрес обратного вызова, проверка «Тест» (HTML)
+- [google-login-client](google-login-client/) — завести OAuth-клиент Google для входа на сайт, ключи — командой в терминале (HTML, EN/RU)
 - [google-oauth-client-fix](google-oauth-client-fix/) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи
 - [cloudflare-web-analytics](cloudflare-web-analytics/) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
 - [llm-chat-answer](llm-chat-answer/) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
-- [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку
+- [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку (HTML)
+- [yandex-login-client](yandex-login-client/) — завести приложение Яндекс ID для входа на сайт, ключи — командой в терминале (HTML)

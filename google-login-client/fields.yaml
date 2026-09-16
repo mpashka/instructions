@@ -1,0 +1,16 @@
+title: завести OAuth-клиент Google для входа на сайт и сохранить его ключи командой
+fields:
+  project_name:
+    about: имя проекта в Google Cloud и имя клиента
+    example: example-app
+  app_name:
+    about: название приложения, которое Google показывает на экране входа
+    example: Example
+  redirect_uris:
+    about: адреса возврата, по одному на строку, ровно как их шлёт сервер
+    example: |
+      http://localhost:8080/api/auth/google/callback
+      https://app.example.org/api/auth/google/callback
+  save_command:
+    about: команда, которая спрашивает Client ID и секрет и сохраняет их
+    example: ~/bin/save-oauth-client google
