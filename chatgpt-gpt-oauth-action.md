@@ -69,6 +69,7 @@ callback URL уходит на сервер. До этого **Test** падае
 
 | Что видно | Что делать |
 |---|---|
+| под схемой красным `In components section, schemas subsection is not an object` | дефект схемы на сервере, а не твоя ошибка: редактору нужен `components.schemas`, хоть пустой. Отдай текст агенту, после исправления — **Import from URL** заново |
 | сервер при входе ругается на `redirect_uri` | callback URL на сервере не тот: отдай его заново, **целиком**, без `/` в конце |
 | после входа ChatGPT пишет про ошибку токена, `invalid_client` | secret введён не тот или с пробелом — вставь заново из `secret-source`, **Save**, **Update** |
 | callback URL поменялся | так бывает после пересоздания действия — отдай новый по `callback-return` |
