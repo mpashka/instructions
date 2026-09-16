@@ -25,3 +25,5 @@
 - [llm-chat-answer.md](llm-chat-answer.md) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
 - [xiaomi-adb-install.md](xiaomi-adb-install.md) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку
 - [cloudflare-web-analytics.md](cloudflare-web-analytics.md) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
+- [chatgpt-gpt-oauth-action.md](chatgpt-gpt-oauth-action.md) — приватный GPT с Action на OAuth: поля, callback URL, проверка Test
+- [google-oauth-client-fix.md](google-oauth-client-fix.md) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи
