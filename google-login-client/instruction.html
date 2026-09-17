@@ -69,7 +69,7 @@
 </header>
 <p>Завести в Google Cloud OAuth-клиент, через который на сайт входят аккаунтом Google, и сохранить его ключи командой в терминале. Нужен любой аккаунт Google; платить ничего не надо. Время — минут 10.</p>
 <p><b>ИИ-агент</b> — Claude, Codex или другой ИИ-агент, от которого ты получил эту инструкцию.</p>
-<div class="warn">🚨 В шаге 5 на экране будет <b>секрет клиента</b>. Он вставляется только в терминал, в команду из шага 5: ИИ-агенту и в заметки его не пересылай.</div>
+<div class="warn">🚨 В шаге 5 скачивается файл с <b>секретом клиента</b>. Он отдаётся только команде из шага 5: ИИ-агенту файл и его содержимое не пересылай.</div>
 <p class="meta">Переключатель <b>EN / RU</b> справа вверху — язык консоли Google, выбери тот, что у тебя на экране. Составлена 2026-09-16 по документации Google, экраны не сверены: если надпись отличается — ищи по смыслу и расположению. Рисунки упрощены, обведено то, что нажимать или заполнять. Кнопка «Копировать» кладёт значение в буфер обмена.</p>
 
 <section class="step" id="project">
@@ -147,20 +147,15 @@
   <div class="screen">
     <div class="bar"><span class="title"><span lang="en">OAuth client created</span><span lang="ru">Клиент OAuth создан</span></span></div>
     <div class="body">
-      <div class="fld"><div class="label"><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></div><div class="input hit"><span class="empty">1234567890-….apps.googleusercontent.com</span><span>⧉</span></div></div>
-      <div class="fld"><div class="label"><span lang="en">Client secret</span><span lang="ru">Секрет клиента</span></div><div class="input hit"><span class="empty">GOCSPX-…</span><span>⧉</span></div></div>
-      <span class="btn"><span lang="en">OK</span><span lang="ru">ОК</span></span>
+      <div class="fld"><div class="label"><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></div><div class="input"><span class="empty">1234567890-….apps.googleusercontent.com</span></div></div>
+      <div class="fld"><div class="label"><span lang="en">Client secret</span><span lang="ru">Секрет клиента</span></div><div class="input"><span class="empty">GOCSPX-…</span></div></div>
+      <span class="btn hit"><span lang="en">Download JSON</span><span lang="ru">Скачать JSON</span></span> <span class="btn"><span lang="en">OK</span><span lang="ru">ОК</span></span>
     </div>
   </div>
-  <p>Окно не закрывай. Открой терминал и запусти:</p>
+  <p>Нажми <b><span lang="en">Download JSON</span><span lang="ru">Скачать JSON</span></b> — в «Загрузках» появится файл <span class="mono">client_secret_….json</span>. Открой терминал и запусти команду, дописав через пробел путь к этому файлу:</p>
   <div class="input"><span class="v">{{save_command}}</span><button class="copy" type="button">Копировать</button></div>
-  <ol>
-    <li>На <b>Client ID:</b> — скопируй идентификатор кнопкой ⧉ в окне Google, вставь в терминал, Enter.</li>
-    <li>На <b>Client secret:</b> — скопируй секрет кнопкой ⧉, вставь, Enter. Вставленное не отображается — так и должно быть.</li>
-    <li>Спросит «Не похоже на обычный вид…» — скорее всего, скопировалось не то: ответь Enter и вставь заново.</li>
-  </ol>
-  <p>Удалось, если команда напечатала строку, начинающуюся с <b>ГОТОВО</b>. Теперь окно Google можно закрыть.</p>
-  <p class="caption">Окно закрылось раньше — секрет второй раз не показывают: <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → клиент {{client_name}} → <b><span lang="en">Add secret</span><span lang="ru">Добавить секрет</span></b>, и возьми новый.</p>
+  <p>Удалось, если команда напечатала строку, начинающуюся с <b>ГОТОВО</b>. Скачанный файл команда удаляет сама — секрет остаётся только в хранилище.</p>
+  <p class="caption">Окно закрылось без скачивания — секрет второй раз не показывают: <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → клиент {{client_name}} → <b><span lang="en">Add secret</span><span lang="ru">Добавить секрет</span></b>, и скачай JSON заново.</p>
 </section>
 
 <section class="step" id="result">
@@ -170,7 +165,7 @@
   <p>Если нет:</p>
   <div class="table"><table>
     <tr><th>Что видно</th><th>Что делать</th></tr>
-    <tr><td>команда из шага 5 напечатала ошибку</td><td>перешли ИИ-агенту текст ошибки. Значения ключей не пересылай — окно Google не закрывай, повтори шаг 5 после ответа</td></tr>
+    <tr><td>команда из шага 5 напечатала ошибку</td><td>перешли ИИ-агенту текст ошибки. Файл и значения ключей не пересылай — повтори шаг 5 после ответа</td></tr>
     <tr><td>экран на каком-то шаге выглядит иначе и нужного поля не найти</td><td>напиши ИИ-агенту номер шага и надписи, которые видишь</td></tr>
     <tr><td>Google требует проверку приложения или платёжный аккаунт; при входе «Доступ заблокирован» — адреса нет в тестовых пользователях</td><td>перешли ИИ-агенту текст сообщения целиком</td></tr>
   </table></div>
