@@ -3,6 +3,9 @@ fields:
   app_name:
     about: название приложения, которое Яндекс показывает на экране входа
     example: Example
+  icon_path:
+    about: полный путь к картинке иконки (PNG до 1 МБ) — без неё Яндекс приложение не создаёт
+    example: ~/Projects/example/icon-512.png
   redirect_uris:
     about: адреса возврата, по одному на строку, ровно как их шлёт сервер
     example: |
