@@ -2,6 +2,7 @@ import contextlib
 import importlib.machinery
 import importlib.util
 import io
+import re
 import stat
 import tempfile
 import unittest
@@ -33,6 +34,9 @@ class Sandbox(unittest.TestCase):
         self.tmp = Path(self._tmp.name)
         self.out = self.tmp / "out"
         self._repo = render.REPO
+        self.write("proj/AGENTS.md", "")
+        self.task = "proj/docs/requests/task"
+        self.built = self.out / "proj" / "task"
 
     def tearDown(self):
         render.REPO = self._repo
@@ -63,21 +67,32 @@ class RealTemplates(Sandbox):
         sections = {n: {f: d["example"] for f, d in
                         (render.load_yaml(REPO / n / "fields.yaml").get("fields") or {}).items()}
                     for n in names}
-        values = self.write("values.yaml", yaml.safe_dump(sections, allow_unicode=True))
+        values = self.write(f"{self.task}/values.yaml", yaml.safe_dump(sections, allow_unicode=True))
         render.render(values, [], self.out, fake_vault({})[0])
         for name in names:
-            for path in (self.out / name).iterdir():
+            for path in self.built.glob(f"proj-task-{name}.*"):
                 text = path.read_text(encoding="utf-8")
                 self.assertFalse("{{" in text, f"{path}: остался плейсхолдер")
                 self.assertFalse("template-note:begin" in text, f"{path}: осталась пометка шаблона")
+
+
+class Links(unittest.TestCase):
+    def test_html_links_open_in_a_new_window(self):
+        for path in REPO.glob("*/instruction.html"):
+            text = path.read_text(encoding="utf-8")
+            for tag in re.findall(r"<a\b[^>]*>", text):
+                self.assertIn('target="_blank"', tag, f"{path}: {tag}")
+                self.assertIn('rel="noopener"', tag, f"{path}: {tag}")
+            bare = re.findall(r'<span class="mono">(https://[^<{]*)</span>', text)
+            self.assertEqual([], bare, f"{path}: адрес текстом, а не ссылкой")
 
 
 class Rendering(Sandbox):
     def test_substitutes_vault_secret_without_printing_it(self):
         self.make_template({"client_id": {}, "client_secret": {}},
                            "<p>{{client_id}} / {{ client_secret }}</p>", "instruction.html")
-        self.write("vault/app.yml", "")
-        values = self.write("task/values.yaml",
+        self.write("proj/docs/requests/vault/app.yml", "")
+        values = self.write(f"{self.task}/values.yaml",
                             "demo:\n  client_id: my-client\n"
                             "  client_secret: {vault: ../vault/app.yml, key: vault_secret}\n")
         vault, calls = fake_vault({"vault_secret": SECRET})
@@ -87,48 +102,65 @@ class Rendering(Sandbox):
         self.assertEqual(0, code, stderr)
         self.assertNotIn(SECRET, stdout + stderr)
         self.assertIn("client_secret (vault)", stdout)
-        self.assertEqual([(self.tmp / "vault/app.yml").resolve()], calls)
-        rendered = self.out / "demo" / "instruction.html"
+        self.assertEqual([(self.tmp / "proj/docs/requests/vault/app.yml").resolve()], calls)
+        rendered = self.out / "proj" / "task" / "proj-task-demo.html"
         self.assertEqual("<p>my-client / s3cr3t-&lt;&amp;&gt;-value</p>", rendered.read_text())
         self.assertEqual(0o600, stat.S_IMODE(rendered.stat().st_mode))
-        self.assertEqual(0o700, stat.S_IMODE((self.out / "demo").stat().st_mode))
+        self.assertEqual(0o700, stat.S_IMODE((self.out / "proj").stat().st_mode))
+        self.assertEqual(0o700, stat.S_IMODE((self.out / "proj" / "task").stat().st_mode))
         self.assertEqual(0o700, stat.S_IMODE(self.out.stat().st_mode))
         self.assertTrue((self.out / "README.md").is_file())
 
     def test_markdown_is_not_escaped_and_template_note_is_dropped(self):
         self.make_template({"url": {}}, "<!-- template-note:begin -->\n> шаблон\n"
                                         "<!-- template-note:end -->\n# Открой {{url}}\n")
-        values = self.write("values.yaml", "demo:\n  url: https://a.example/?x=1&y=2\n")
+        values = self.write(f"{self.task}/values.yaml", "demo:\n  url: https://a.example/?x=1&y=2\n")
 
         render.render(values, ["demo"], self.out, fake_vault({})[0])
 
         self.assertEqual("# Открой https://a.example/?x=1&y=2\n",
-                         (self.out / "demo" / "instruction.md").read_text())
+                         (self.out / "proj/task/proj-task-demo.md").read_text())
 
     def test_rerender_replaces_previous_output(self):
         self.make_template({"a": {}}, "{{a}}")
-        (self.out / "demo").mkdir(parents=True)
-        (self.out / "demo" / "stale.md").write_text("old")
-        values = self.write("values.yaml", "demo:\n  a: new\n")
+        values = self.write(f"{self.task}/values.yaml", "demo:\n  a: old\n")
+        render.render(values, ["demo"], self.out, fake_vault({})[0])
+        values.write_text("demo:\n  a: new\n")
 
         render.render(values, ["demo"], self.out, fake_vault({})[0])
 
-        self.assertEqual(["instruction.md"], sorted(p.name for p in (self.out / "demo").iterdir()))
+        self.assertEqual("new", (self.out / "proj/task/proj-task-demo.md").read_text())
+
+    def test_task_outside_docs_requests_keeps_its_path(self):
+        self.make_template({"a": {}}, "{{a}}")
+        values = self.write("proj/life/trip/values.yaml", "demo:\n  a: 1\n")
+
+        render.render(values, ["demo"], self.out, fake_vault({})[0])
+
+        self.assertTrue((self.out / "proj/life/trip/proj-trip-demo.md").is_file())
+
+    def test_values_outside_project_is_refused(self):
+        self.make_template({"a": {}}, "{{a}}")
+        (self.tmp / "proj/AGENTS.md").unlink()
+        values = self.write("loose/values.yaml", "demo:\n  a: 1\n")
+        with self.assertRaises(render.RenderError) as caught:
+            render.render(values, ["demo"], self.out, fake_vault({})[0])
+        self.assertIn("вне проекта", str(caught.exception))
 
 
 class Errors(Sandbox):
     def assert_fails(self, values_text, *expected, names=("demo",), vault=None):
-        values = self.write("values.yaml", values_text)
+        values = self.write(f"{self.task}/values.yaml", values_text)
         with self.assertRaises(render.RenderError) as caught:
             render.render(values, list(names), self.out, vault or fake_vault({})[0])
         for part in expected:
             self.assertIn(part, str(caught.exception))
-        self.assertFalse((self.out / "demo").exists())
+        self.assertFalse((self.out / "proj").exists())
         return str(caught.exception)
 
     def test_missing_field_names_field_and_file(self):
         self.make_template({"a": {}, "b": {}}, "{{a}} {{b}}")
-        self.assert_fails("demo:\n  a: 1\n  b: ''\n", "не заполнены поля b", str(self.tmp / "values.yaml"))
+        self.assert_fails("demo:\n  a: 1\n  b: ''\n", "не заполнены поля b", str(self.tmp / self.task / "values.yaml"))
 
     def test_unknown_field(self):
         self.make_template({"a": {}}, "{{a}}")
@@ -140,7 +172,7 @@ class Errors(Sandbox):
 
     def test_missing_vault_key(self):
         self.make_template({"a": {}}, "{{a}}")
-        self.write("app.yml", "")
+        self.write(f"{self.task}/app.yml", "")
         message = self.assert_fails("demo:\n  a: {vault: app.yml, key: absent}\n", "нет ключа absent",
                                     vault=fake_vault({"other": SECRET})[0])
         self.assertNotIn(SECRET, message)
@@ -151,29 +183,34 @@ class Errors(Sandbox):
 
     def test_main_reports_error_to_stderr(self):
         self.make_template({"a": {}}, "{{a}}")
-        values = self.write("values.yaml", "demo: {}\n")
+        values = self.write(f"{self.task}/values.yaml", "demo: {}\n")
         code, _, stderr = self.run_main(str(values))
         self.assertEqual(1, code)
         self.assertIn("не заполнены поля a", stderr)
 
 
 class Cleaning(Sandbox):
-    def test_clean_removes_named_and_keeps_others(self):
-        for name in ("one", "two"):
-            (self.out / name / "sub").mkdir(parents=True)
-            (self.out / name / "sub" / "instruction.md").write_text(SECRET)
+    def setUp(self):
+        super().setUp()
+        self.make_template({"a": {}}, "{{a}}")
+        self.write("templates/other/fields.yaml", "fields: {}\n")
+        self.write("templates/other/instruction.md", "x")
+        self.values = self.write(f"{self.task}/values.yaml", f"demo:\n  a: {SECRET}\nother: {{}}\n")
+        render.render(self.values, [], self.out, fake_vault({})[0])
+        self.neighbour = self.write("proj/docs/requests/next/values.yaml", "other: {}\n")
+        render.render(self.neighbour, [], self.out, fake_vault({})[0])
 
-        code, stdout, _ = self.run_main("--clean", "one")
+    def test_clean_removes_named_template_of_the_task(self):
+        code, _, _ = self.run_main("--clean", str(self.values), "demo")
 
         self.assertEqual(0, code)
-        self.assertFalse((self.out / "one").exists())
-        self.assertTrue((self.out / "two").exists())
+        self.assertEqual(["proj-task-other.md"], sorted(p.name for p in (self.out / "proj/task").iterdir()))
 
-    def test_clean_without_names_removes_everything(self):
-        (self.out / "one").mkdir(parents=True)
-        (self.out / "one" / "instruction.md").write_text(SECRET)
-        self.run_main("--clean")
-        self.assertEqual([], list(self.out.iterdir()))
+    def test_clean_without_names_removes_the_task_only(self):
+        self.run_main("--clean", str(self.values))
+
+        self.assertFalse((self.out / "proj/task").exists())
+        self.assertTrue((self.out / "proj/next/proj-next-other.md").is_file())
 
 
 if __name__ == "__main__":

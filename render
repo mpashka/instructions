@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Рендерер инструкций: шаблон + файл значений → готовая инструкция вне git.
 
-    render <значения.yaml> [шаблон ...]     собрать (без шаблонов — все из файла значений)
-    render --clean [шаблон ...]             затереть и удалить собранное (без шаблонов — всё)
+    render <значения.yaml> [шаблон ...]           собрать (без шаблонов — все из файла значений)
+    render --clean <значения.yaml> [шаблон ...]   затереть и удалить собранное задачей (без шаблонов — всё)
 
 Устройство и формат файлов — README.md рядом.
 """
@@ -25,8 +25,11 @@ OUT_README = """# Собранные инструкции
 
 Готовые инструкции для человека, собранные командой `{render}` из шаблонов и файлов значений.
 В файлах бывают секреты открытым текстом: ИИ-агент их не читает, человек открывает сам.
-После использования — `{render} --clean <шаблон>`; собрать заново — `{render} <значения.yaml> <шаблон>`.
+Раскладка — `<проект>/<задача>/<проект>-<задача>-<шаблон>.html`: имя файла уникально, чтобы открывать его по имени в IDE.
+После использования — `{render} --clean <значения.yaml>`; собрать заново — `{render} <значения.yaml>`.
 """
+PROJECT_MARKERS = ("AGENTS.md", ".git")
+TASKS_DIR = Path("docs/requests")
 TEMPLATE_NOTE = re.compile(r"<!-- template-note:begin -->.*?<!-- template-note:end -->\n?", re.S)
 
 
@@ -168,8 +171,36 @@ def wipe_dir(path: Path):
     path.rmdir()
 
 
+class TaskLocation:
+    """Где лежит собранное задачей: каталог <проект>/<задача> и префикс имени файла <проект>-<задача>.
+
+    Проект — ближайший каталог над файлом значений с AGENTS.md или .git; задача — путь от проекта до
+    каталога файла значений без docs/requests.
+    """
+
+    def __init__(self, values_file: Path):
+        directory = values_file.resolve().parent
+        project = next((d for d in (directory, *directory.parents)
+                        if any((d / m).exists() for m in PROJECT_MARKERS)), None)
+        if project is None:
+            raise RenderError(f"{values_file}: файл значений лежит вне проекта — "
+                              f"выше нет ни {' ни '.join(PROJECT_MARKERS)}; положи его в каталог задачи")
+        task = directory.relative_to(project)
+        if task.is_relative_to(TASKS_DIR):
+            task = task.relative_to(TASKS_DIR)
+        if task == Path("."):
+            raise RenderError(f"{values_file}: файл значений лежит в корне проекта {project}; "
+                              "положи его в каталог задачи")
+        self.directory = Path(project.name) / task
+        self.prefix = f"{project.name}-{task.name}"
+
+    def file_name(self, template: str, template_file: str) -> str:
+        return f"{self.prefix}-{template}{Path(template_file).suffix}"
+
+
 def render(values_file: Path, names: list, out_root: Path, vault: VaultReader) -> list:
     values_file = values_file.resolve()
+    location = TaskLocation(values_file)
     sections = load_yaml(values_file)
     names = names or list(sections)
     if not names:
@@ -184,29 +215,36 @@ def render(values_file: Path, names: list, out_root: Path, vault: VaultReader) -
     make_private_dir(out_root)
     write_private(out_root / "README.md", OUT_README.format(render=REPO / "render"))
     report = []
-    for name, files, values, from_vault in prepared:
-        target = out_root / name
-        if target.exists():
-            wipe_dir(target)
+    target = out_root
+    for part in location.directory.parts:
+        target = target / part
         make_private_dir(target)
+    for name, files, values, from_vault in prepared:
         written = []
         for file_name, text in files.items():
+            path = target / location.file_name(name, file_name)
             escape = html.escape if file_name.endswith(".html") else str
-            write_private(target / file_name, substitute(text, values, escape))
-            written.append(target / file_name)
+            write_private(path, substitute(text, values, escape))
+            written.append(path)
         report.append((name, written, sorted(values), sorted(from_vault)))
     return report
 
 
-def clean(names: list, out_root: Path) -> list:
-    if not out_root.is_dir():
+def clean(values_file: Path, names: list, out_root: Path) -> list:
+    location = TaskLocation(values_file)
+    target = out_root / location.directory
+    if not target.is_dir():
         return []
-    targets = [out_root / n for n in names] if names else sorted(p for p in out_root.iterdir() if p.is_dir())
+    if not names:
+        wipe_dir(target)
+        return [target]
     removed = []
-    for target in targets:
-        if target.is_dir():
-            wipe_dir(target)
-            removed.append(target)
+    for name in names:
+        for file_name in TEMPLATE_FILES:
+            path = target / location.file_name(name, file_name)
+            if path.is_file():
+                wipe_file(path)
+                removed.append(path)
     return removed
 
 
@@ -216,17 +254,17 @@ def main(argv=None, vault=None) -> int:
     parser.add_argument("--clean", action="store_true", help="затереть и удалить собранные инструкции")
     parser.add_argument("--out", type=Path, default=Path(os.environ.get("INSTRUCTIONS_OUT", DEFAULT_OUT)),
                         help=f"куда собирать (по умолчанию {DEFAULT_OUT}, или $INSTRUCTIONS_OUT)")
-    parser.add_argument("args", nargs="*", help="файл значений и шаблоны; для --clean — только шаблоны")
+    parser.add_argument("args", nargs="*", help="файл значений и шаблоны")
     options = parser.parse_args(argv)
     out_root = options.out.expanduser()
     try:
-        if options.clean:
-            removed = clean(options.args, out_root)
-            print("удалено: " + (", ".join(map(str, removed)) if removed else "нечего"))
-            return 0
         if not options.args:
             parser.error("нужен файл значений")
         values_file, *names = options.args
+        if options.clean:
+            removed = clean(Path(values_file), names, out_root)
+            print("удалено: " + (", ".join(map(str, removed)) if removed else "нечего"))
+            return 0
         report = render(Path(values_file), names, out_root, vault or VaultReader())
         for name, written, fields, from_vault in report:
             print(f"{name}:")
@@ -234,7 +272,7 @@ def main(argv=None, vault=None) -> int:
                 print(f"  {path}")
             print(f"  поля: {', '.join(f + (' (vault)' if f in from_vault else '') for f in fields) or '—'}")
         out_flag = "" if out_root == DEFAULT_OUT else f" --out {out_root}"
-        print(f"после использования: {REPO / 'render'}{out_flag} --clean {' '.join(r[0] for r in report)}")
+        print(f"после использования: {REPO / 'render'}{out_flag} --clean {Path(values_file).resolve()}")
         return 0
     except RenderError as e:
         print(f"render: {e}", file=sys.stderr)
