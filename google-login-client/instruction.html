@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Вход через Google: клиент «{{project_name}}»</title>
+<title>Вход через Google: клиент «{{client_name}}»</title>
 <style>
   :root { --bg:#f6f6f4; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#d6d6d0;
           --accent:#2f6fd6; --hit:#e8f0ff; --warn:#fff3c4; --warn-ink:#6a5200; --opt:#e3efe3; --opt-ink:#2f5d2f;
@@ -62,7 +62,7 @@
 <div class="template-note">🚨 <b>Шаблон, а не инструкция.</b> <code>{{…}}</code> — места для значений; готовую инструкцию собирает <code>render</code> (README репозитория).</div>
 <!-- template-note:end -->
 <header>
-  <h1>Вход через Google: клиент «{{project_name}}»</h1>
+  <h1>Вход через Google: клиент «{{client_name}}»</h1>
   <div class="langs" role="group" aria-label="Язык консоли Google">
     <button type="button" data-set="en">EN</button><button type="button" data-set="ru">RU</button>
   </div>
@@ -74,7 +74,8 @@
 
 <section class="step" id="project">
   <h2><span class="n">1</span>Создать проект</h2>
-  <p>Открой <a class="mono" href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">https://console.cloud.google.com/projectcreate</a> и войди своим аккаунтом Google.</p>
+  <p>Проект <b>{{project_name}}</b> уже есть (выбери его в шапке консоли) — пропусти шаги 1 и 2 и начни с шага 3.</p>
+  <p>Нет — открой <a class="mono" href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">https://console.cloud.google.com/projectcreate</a> и войди своим аккаунтом Google.</p>
   <div class="screen">
     <div class="bar"><span class="title"><span lang="en">New Project</span><span lang="ru">Новый проект</span></span></div>
     <div class="body">
@@ -109,15 +110,17 @@
   </div>
 </section>
 
-<section class="step" id="publish">
-  <h2><span class="n">3</span>Опубликовать приложение</h2>
+<section class="step" id="test-users">
+  <h2><span class="n">3</span>Тестовые пользователи</h2>
+  <p>Слева раздел <b><span lang="en">Audience</span><span lang="ru">Аудитория</span></b>, внизу страницы <b>+ <span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></b>. Впиши через запятую почты Google всех, кто будет входить: свою и семьи, потом <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>.</p>
   <div class="screen">
     <div class="bar"><span class="title"><span lang="en">Audience</span><span lang="ru">Аудитория</span></span></div>
     <div class="body">
-      <div class="fld"><div class="label"><span lang="en">Publishing status</span><span lang="ru">Статус публикации</span></div><div class="row"><span><span lang="en">Testing</span><span lang="ru">Тестирование</span></span> <span class="btn hit"><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></span></div></div>
+      <div class="fld"><div class="label"><span lang="en">Publishing status</span><span lang="ru">Статус публикации</span></div><div class="row"><span><span lang="en">Testing</span><span lang="ru">Тестирование</span></span> <span class="btn"><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></span> <span class="opt">не нажимать</span></div></div>
+      <div class="fld"><div class="label"><span lang="en">Test users</span><span lang="ru">Тестовые пользователи</span></div><span class="btn hit">+ <span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></span></div>
     </div>
   </div>
-  <p>Слева раздел <b><span lang="en">Audience</span><span lang="ru">Аудитория</span></b> → <b><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></b> → <b><span lang="en">Confirm</span><span lang="ru">Подтвердить</span></b>. Статус станет <b><span lang="en">In production</span><span lang="ru">В рабочей среде</span></b>. Без этого войти смогут только тестовые пользователи. Проверка приложения Google для входа с именем и почтой не нужна — если предложит её пройти, откажись.</p>
+  <p>Приложение остаётся в статусе <b><span lang="en">Testing</span><span lang="ru">Тестирование</span></b>: войти смогут только эти адреса, до 100 человек. Кнопка <b><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></b> серая, пока не дозаполнена страница <b><span lang="en">Branding</span><span lang="ru">Брендинг</span></b>; публикация нужна только открытому сайту — сейчас не публикуй. Добавить человека позже — тот же раздел. В проекте, заведённом раньше, список уже есть — проверь, что все нужные адреса в нём.</p>
 </section>
 
 <section class="step" id="client">
@@ -127,7 +130,7 @@
     <div class="bar"><span class="title"><span lang="en">Create OAuth client ID</span><span lang="ru">Создание идентификатора клиента OAuth</span></span></div>
     <div class="body">
       <div class="fld hit"><div class="label"><span lang="en">Application type</span><span lang="ru">Тип приложения</span></div><div class="input"><span class="v"><span lang="en">Web application</span><span lang="ru">Веб-приложение</span></span></div></div>
-      <div class="fld hit"><div class="label"><span lang="en">Name</span><span lang="ru">Название</span></div><div class="input"><span class="v">{{project_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld hit"><div class="label"><span lang="en">Name</span><span lang="ru">Название</span></div><div class="input"><span class="v">{{client_name}}</span><button class="copy" type="button">Копировать</button></div></div>
       <div class="fld"><div class="label"><span lang="en">Authorized JavaScript origins</span><span lang="ru">Разрешенные источники JavaScript</span> <span class="opt">оставь пустым</span></div></div>
       <div class="fld"><div class="label"><span lang="en">Authorized redirect URIs</span><span lang="ru">Разрешенные URI перенаправления</span></div>
         <div class="lines">{{redirect_uris}}</div>
@@ -157,19 +160,19 @@
     <li>Спросит «Не похоже на обычный вид…» — скорее всего, скопировалось не то: ответь Enter и вставь заново.</li>
   </ol>
   <p>Удалось, если команда напечатала строку, начинающуюся с <b>ГОТОВО</b>. Теперь окно Google можно закрыть.</p>
-  <p class="caption">Окно закрылось раньше — секрет второй раз не показывают: <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → клиент {{project_name}} → <b><span lang="en">Add secret</span><span lang="ru">Добавить секрет</span></b>, и возьми новый.</p>
+  <p class="caption">Окно закрылось раньше — секрет второй раз не показывают: <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → клиент {{client_name}} → <b><span lang="en">Add secret</span><span lang="ru">Добавить секрет</span></b>, и возьми новый.</p>
 </section>
 
 <section class="step" id="result">
   <h2>Вернуть ИИ-агенту</h2>
   <p>Напиши ИИ-агенту:</p>
-  <div class="input"><span class="v">клиент Google {{project_name}} сохранён</span><button class="copy" type="button">Копировать</button></div>
+  <div class="input"><span class="v">клиент Google {{client_name}} сохранён</span><button class="copy" type="button">Копировать</button></div>
   <p>Если нет:</p>
   <div class="table"><table>
     <tr><th>Что видно</th><th>Что делать</th></tr>
     <tr><td>команда из шага 5 напечатала ошибку</td><td>перешли ИИ-агенту текст ошибки. Значения ключей не пересылай — окно Google не закрывай, повтори шаг 5 после ответа</td></tr>
     <tr><td>экран на каком-то шаге выглядит иначе и нужного поля не найти</td><td>напиши ИИ-агенту номер шага и надписи, которые видишь</td></tr>
-    <tr><td>Google требует проверку приложения, платёжный аккаунт или не даёт опубликовать</td><td>перешли ИИ-агенту текст сообщения целиком</td></tr>
+    <tr><td>Google требует проверку приложения или платёжный аккаунт; при входе «Доступ заблокирован» — адреса нет в тестовых пользователях</td><td>перешли ИИ-агенту текст сообщения целиком</td></tr>
   </table></div>
 </section>
 </main>

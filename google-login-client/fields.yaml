@@ -1,7 +1,10 @@
 title: завести OAuth-клиент Google для входа на сайт и сохранить его ключи командой
 fields:
   project_name:
-    about: имя проекта в Google Cloud и имя клиента
+    about: проект Google Cloud, общий для нескольких приложений (экран входа и тестовые пользователи — одни на проект)
+    example: home-apps
+  client_name:
+    about: имя OAuth-клиента этого приложения внутри проекта
     example: example-app
   app_name:
     about: название приложения, которое Google показывает на экране входа
