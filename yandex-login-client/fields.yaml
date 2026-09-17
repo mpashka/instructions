@@ -11,6 +11,11 @@ fields:
     example: |
       http://localhost:8080/api/auth/yandex/callback
       https://app.example.org/api/auth/yandex/callback
+  scopes:
+    about: коды доступов, по одному на строку, ровно те, что запрашивает сервер
+    example: |
+      login:info
+      login:email
   save_command:
     about: команда, которая спрашивает ClientID и секрет и сохраняет их
     example: ~/bin/save-oauth-client yandex
