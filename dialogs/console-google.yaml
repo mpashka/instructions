@@ -1,0 +1,49 @@
+# Описание диалогов консоли Google Cloud: универсальное имя → надпись на языке интерфейса.
+# Шаблон инструкции ссылается на надпись как {{console-google:<имя>}} — README репозитория.
+site: console.cloud.google.com
+checked: 2026-09-20
+languages: [en, ru]
+labels:
+  add-secret: {en: "Add secret", ru: "Добавить секрет"}
+  add-uri: {en: "Add URI", ru: "Добавить URI"}
+  add-users: {en: "Add users", ru: "Добавить пользователей"}
+  app-information: {en: "App Information", ru: "Информация о приложении"}
+  app-name: {en: "App name", ru: "Название приложения"}
+  application-type: {en: "Application type", ru: "Тип приложения"}
+  audience: {en: "Audience", ru: "Аудитория"}
+  authorized-javascript-origins: {en: "Authorized JavaScript origins", ru: "Разрешённые источники JavaScript"}
+  authorized-redirect-uris: {en: "Authorized redirect URIs", ru: "Разрешённые URI перенаправления"}
+  branding: {en: "Branding", ru: "Брендинг"}
+  client-id: {en: "Client ID", ru: "Идентификатор клиента"}
+  client-secret: {en: "Client secret", ru: "Секрет клиента"}
+  clients: {en: "Clients", ru: "Клиенты"}
+  contact-information: {en: "Contact Information", ru: "Контактная информация"}
+  continue: {en: "Continue", ru: "Продолжить"}
+  create: {en: "Create", ru: "Создать"}
+  create-client: {en: "Create client", ru: "Создать клиента"}
+  create-oauth-client-id: {en: "Create OAuth client ID", ru: "Создание идентификатора клиента OAuth"}
+  download-json: {en: "Download JSON", ru: "Скачать JSON"}
+  email-addresses: {en: "Email addresses", ru: "Адреса электронной почты"}
+  error-details: {en: "error details", ru: "сведения об ошибке"}
+  external: {en: "External", ru: "Внешний"}
+  finish: {en: "Finish", ru: "Готово"}
+  get-started: {en: "Get started", ru: "Начать"}
+  internal: {en: "Internal", ru: "Внутренний"}
+  location: {en: "Location", ru: "Местоположение"}
+  name: {en: "Name", ru: "Название"}
+  new-project: {en: "New Project", ru: "Новый проект"}
+  next: {en: "Next", ru: "Далее"}
+  oauth-client-created: {en: "OAuth client created", ru: "Клиент OAuth создан"}
+  oauth-client-ids: {en: "OAuth 2.0 Client IDs", ru: "Идентификаторы клиентов OAuth 2.0"}
+  ok: {en: "OK", ru: "ОК"}
+  project-name: {en: "Project name", ru: "Название проекта"}
+  publish-app: {en: "Publish app", ru: "Опубликовать приложение"}
+  publishing-status: {en: "Publishing status", ru: "Статус публикации"}
+  save: {en: "Save", ru: "Сохранить"}
+  test-users: {en: "Test users", ru: "Тестовые пользователи"}
+  testing: {en: "Testing", ru: "Тестирование"}
+  uris-1: {en: "URIs 1", ru: "URI 1"}
+  uris-2: {en: "URIs 2", ru: "URI 2"}
+  user-data-policy-agreement: {en: "I agree to the Google API Services: User Data Policy", ru: "Я принимаю Правила в отношении пользовательских данных в сервисах Google API"}
+  user-support-email: {en: "User support email", ru: "Адрес электронной почты службы поддержки"}
+  web-application: {en: "Web application", ru: "Веб-приложение"}

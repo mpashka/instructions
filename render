@@ -20,7 +20,10 @@ REPO = Path(__file__).resolve().parent
 DEFAULT_OUT = Path("~/Projects/home/secrets-out/instructions").expanduser()
 FIELDS_FILE = "fields.yaml"
 TEMPLATE_FILES = ("instruction.md", "instruction.html")
+DIALOGS_DIR = "dialogs"
+DIALOGS_KEYS = ("site", "checked", "languages", "labels")
 PLACEHOLDER = re.compile(r"\{\{\s*([a-z][a-z0-9_]*)\s*\}\}")
+LABEL = re.compile(r"\{\{\s*([a-z][a-z0-9-]*):([a-z][a-z0-9-]*)\s*\}\}")
 OUT_README = """# Собранные инструкции
 
 Готовые инструкции для человека, собранные командой `{render}` из шаблонов и файлов значений.
@@ -90,6 +93,62 @@ def list_templates() -> list:
     return sorted(p.parent.name for p in REPO.glob(f"*/{FIELDS_FILE}"))
 
 
+def list_dialogs() -> list:
+    return sorted(p.stem for p in (REPO / DIALOGS_DIR).glob("*.yaml"))
+
+
+def read_dialogs(site: str) -> dict:
+    """Описание диалогов сайта: универсальное имя надписи → надпись на каждом объявленном языке."""
+    path = REPO / DIALOGS_DIR / f"{site}.yaml"
+    if not path.is_file():
+        known = ", ".join(list_dialogs()) or "—"
+        raise RenderError(f"нет описания диалогов {path}; есть: {known}")
+    data = load_yaml(path)
+    missing = [key for key in DIALOGS_KEYS if key not in data]
+    if missing:
+        raise RenderError(f"{path}: нет ключей {', '.join(missing)}; ждём {', '.join(DIALOGS_KEYS)}")
+    languages = data["languages"]
+    if not isinstance(languages, list) or not languages:
+        raise RenderError(f"{path}: languages — непустой список языков, например [en, ru]")
+    data["labels"] = data["labels"] or {}
+    for label, text in data["labels"].items():
+        if not isinstance(text, dict):
+            raise RenderError(f"{path}, надпись {label}: ожидался язык → надпись")
+        for language in languages:
+            if not text.get(language):
+                raise RenderError(f"{path}, надпись {label}: нет языка {language}")
+        extra = set(text) - set(languages)
+        if extra:
+            raise RenderError(f"{path}, надпись {label}: языки {', '.join(sorted(extra))} "
+                              f"не объявлены в languages ({', '.join(languages)})")
+    return data
+
+
+def substitute_labels(text: str, name: str, file_name: str) -> str:
+    """Ссылку {{<сайт>:<надпись>}} — в надпись сайта на всех его языках."""
+    markup = file_name.endswith(".html")
+    escape = html.escape if markup else str
+    described = {site: read_dialogs(site) for site in {s for s, _ in LABEL.findall(text)}}
+
+    def label(match):
+        site, key = match.group(1), match.group(2)
+        dialogs = described[site]
+        if key not in dialogs["labels"]:
+            known = ", ".join(sorted(dialogs["labels"])) or "—"
+            raise RenderError(f"шаблон {name}, {file_name}: в описании диалогов {site} нет надписи "
+                              f"{key}; есть: {known}")
+        languages, texts = dialogs["languages"], dialogs["labels"][key]
+        if len(languages) == 1:
+            return escape(texts[languages[0]])
+        if not markup:
+            raise RenderError(f"шаблон {name}, {file_name}: надпись {site}:{key} — на нескольких "
+                              f"языках ({', '.join(languages)}), а в Markdown нет ни переключателя, "
+                              "ни рисунка экрана; такой шаг пишется в instruction.html")
+        return "".join(f'<span lang="{lang}">{escape(texts[lang])}</span>' for lang in languages)
+
+    return LABEL.sub(label, text)
+
+
 def read_template(name: str):
     directory = template_dir(name)
     declared = load_yaml(directory / FIELDS_FILE).get("fields") or {}
@@ -97,6 +156,7 @@ def read_template(name: str):
              for f in TEMPLATE_FILES if (directory / f).is_file()}
     if not files:
         raise RenderError(f"в шаблоне {name} нет ни одного из {', '.join(TEMPLATE_FILES)}")
+    files = {f: substitute_labels(text, name, f) for f, text in files.items()}
     used = {m for text in files.values() for m in PLACEHOLDER.findall(text)}
     if used - set(declared):
         raise RenderError(f"шаблон {name} использует поля, не объявленные в {FIELDS_FILE}: "

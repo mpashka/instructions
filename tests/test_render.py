@@ -53,6 +53,14 @@ class Sandbox(unittest.TestCase):
         self.write("templates/demo/fields.yaml", yaml.safe_dump({"fields": fields}))
         self.write(f"templates/demo/{file_name}", text)
 
+    def make_dialogs(self, site, languages, labels, **rest):
+        render.REPO = self.tmp / "templates"
+        described = {"site": f"{site}.example", "checked": "2026-09-20",
+                     "languages": languages, "labels": labels, **rest}
+        for key in [k for k, v in described.items() if v is None]:
+            described.pop(key)
+        self.write(f"templates/dialogs/{site}.yaml", yaml.safe_dump(described, allow_unicode=True))
+
     def run_main(self, *argv, vault=None):
         stdout, stderr = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
@@ -61,7 +69,7 @@ class Sandbox(unittest.TestCase):
 
 
 class RealTemplates(Sandbox):
-    def test_every_template_renders_from_its_examples(self):
+    def build_all(self):
         names = render.list_templates()
         self.assertIn("chatgpt-gpt-oauth-action", names)
         sections = {n: {f: d["example"] for f, d in
@@ -69,11 +77,119 @@ class RealTemplates(Sandbox):
                     for n in names}
         values = self.write(f"{self.task}/values.yaml", yaml.safe_dump(sections, allow_unicode=True))
         render.render(values, [], self.out, fake_vault({})[0])
-        for name in names:
-            for path in self.built.glob(f"proj-task-{name}.*"):
-                text = path.read_text(encoding="utf-8")
-                self.assertFalse("{{" in text, f"{path}: остался плейсхолдер")
-                self.assertFalse("template-note:begin" in text, f"{path}: осталась пометка шаблона")
+        return [path for name in names for path in self.built.glob(f"proj-task-{name}.*")]
+
+    def test_every_template_renders_from_its_examples(self):
+        for path in self.build_all():
+            text = path.read_text(encoding="utf-8")
+            self.assertFalse("{{" in text, f"{path}: остался плейсхолдер")
+            self.assertFalse("template-note:begin" in text, f"{path}: осталась пометка шаблона")
+
+    def test_built_instruction_opens_without_network(self):
+        outside = re.compile(r"<script[^>]*\ssrc=|<link\b|<img\b|@import|url\(\s*['\"]?https?:")
+        for path in self.build_all():
+            if path.suffix != ".html":
+                continue
+            found = outside.search(path.read_text(encoding="utf-8"))
+            self.assertIsNone(found, f"{path}: внешний ресурс {found.group(0) if found else ''}")
+
+
+class Labels(Sandbox):
+    def build(self, text, file_name="instruction.html"):
+        fields = {name: {} for name in render.PLACEHOLDER.findall(text)}
+        self.make_template(fields, text, file_name)
+        values = self.write(f"{self.task}/values.yaml",
+                            yaml.safe_dump({"demo": {name: "1" for name in fields}}))
+        render.render(values, ["demo"], self.out, fake_vault({})[0])
+        return (self.out / f"proj/task/proj-task-demo{Path(file_name).suffix}").read_text()
+
+    def test_label_becomes_a_span_per_language_in_declared_order(self):
+        self.make_dialogs("site", ["en", "ru"], {"save": {"en": "Save & go", "ru": "Сохранить"}})
+
+        built = self.build("<p>{{a}} {{ site:save }}</p>")
+
+        self.assertEqual('<p>1 <span lang="en">Save &amp; go</span>'
+                         '<span lang="ru">Сохранить</span></p>', built)
+
+    def test_single_language_dialogs_give_plain_text(self):
+        self.make_dialogs("site", ["ru"], {"save": {"ru": "Сохранить"}})
+
+        self.assertEqual("<p>Сохранить</p>", self.build("<p>{{site:save}}</p>"))
+        self.assertEqual("# Сохранить", self.build("# {{site:save}}", "instruction.md"))
+
+    def test_markdown_refuses_a_label_in_several_languages(self):
+        self.make_dialogs("site", ["en", "ru"], {"save": {"en": "Save", "ru": "Сохранить"}})
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("# {{site:save}}", "instruction.md")
+        self.assertIn("instruction.html", str(caught.exception))
+        self.assertIn("site:save", str(caught.exception))
+
+    def test_unknown_dialogs_names_the_file_and_the_known_ones(self):
+        self.make_dialogs("site", ["ru"], {"save": {"ru": "Сохранить"}})
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("<p>{{other:save}}</p>")
+        self.assertIn(str(self.tmp / "templates/dialogs/other.yaml"), str(caught.exception))
+        self.assertIn("есть: site", str(caught.exception))
+
+    def test_unknown_label_names_the_template_and_the_known_ones(self):
+        self.make_dialogs("site", ["ru"], {"save": {"ru": "Сохранить"}})
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("<p>{{site:cancel}}</p>")
+        message = str(caught.exception)
+        self.assertIn("шаблон demo, instruction.html", message)
+        self.assertIn("нет надписи cancel", message)
+        self.assertIn("есть: save", message)
+
+    def test_label_without_a_declared_language_is_refused(self):
+        self.make_dialogs("site", ["en", "ru"], {"save": {"en": "Save"}})
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("<p>{{site:save}}</p>")
+        self.assertIn("надпись save: нет языка ru", str(caught.exception))
+
+    def test_language_outside_the_declared_list_is_refused(self):
+        self.make_dialogs("site", ["en"], {"save": {"en": "Save", "de": "Speichern"}})
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("<p>{{site:save}}</p>")
+        self.assertIn("языки de не объявлены", str(caught.exception))
+
+    def test_dialogs_without_a_check_date_is_refused(self):
+        self.make_dialogs("site", ["en"], {"save": {"en": "Save"}}, checked=None)
+
+        with self.assertRaises(render.RenderError) as caught:
+            self.build("<p>{{site:save}}</p>")
+        self.assertIn("нет ключей checked", str(caught.exception))
+
+    def test_field_syntax_is_not_taken_for_a_label(self):
+        self.assertEqual("<p>1</p>", self.build("<p>{{a}}</p>"))
+
+
+class Dialogs(unittest.TestCase):
+    def sites(self, text):
+        return {site for site, _ in render.LABEL.findall(text)}
+
+    def test_template_has_a_switch_for_every_language_of_its_dialogs(self):
+        for path in REPO.glob("*/instruction.html"):
+            text = path.read_text(encoding="utf-8")
+            for site in self.sites(text):
+                for language in render.read_dialogs(site)["languages"]:
+                    self.assertIn(f'data-set="{language}"', text,
+                                  f"{path}: нет кнопки языка {language} из dialogs/{site}.yaml")
+
+    def test_labels_of_a_multilingual_site_live_in_dialogs_only(self):
+        for path in REPO.glob("*/instruction.html"):
+            text = path.read_text(encoding="utf-8")
+            if not self.sites(text):
+                continue
+            known = {label["en"] for site in self.sites(text)
+                     for label in render.read_dialogs(site)["labels"].values()}
+            spelled = {en for en, _ in re.findall(
+                r'<span lang="en">([^<]*)</span><span lang="ru">([^<]*)</span>', text)}
+            self.assertEqual(set(), spelled & known, f"{path}: надпись сайта выписана в шаблоне")
 
 
 class Links(unittest.TestCase):

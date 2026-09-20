@@ -72,13 +72,13 @@
 
 <section class="step" id="find">
   <h2><span class="n">1</span>Найти клиент</h2>
-  <p>Открой <a class="mono" href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener">https://console.cloud.google.com/auth/clients</a>. Вверху слева — выбор проекта: перебери проекты, пока в списке клиентов не окажется строка с этим <b><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></b>:</p>
+  <p>Открой <a class="mono" href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener">https://console.cloud.google.com/auth/clients</a>. Вверху слева — выбор проекта: перебери проекты, пока в списке клиентов не окажется строка с этим <b>{{console-google:client-id}}</b>:</p>
   <div class="input"><span class="v">{{google_client_id}}</span><button class="copy" type="button">Копировать</button></div>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">OAuth 2.0 Client IDs</span><span lang="ru">Идентификаторы клиентов OAuth 2.0</span></span></div>
+    <div class="bar"><span class="title">{{console-google:oauth-client-ids}}</span></div>
     <div class="body">
       <div class="table"><table>
-        <tr><th><span lang="en">Name</span><span lang="ru">Название</span></th><th><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></th></tr>
+        <tr><th>{{console-google:name}}</th><th>{{console-google:client-id}}</th></tr>
         <tr><td><span class="hit"><span lang="en">open this one</span><span lang="ru">открой эту строку</span></span></td><td><span class="mono">{{google_client_id}}</span></td></tr>
       </table></div>
     </div>
@@ -90,14 +90,14 @@
   <h2><span class="n">2</span>Добавить адрес возврата</h2>
   <p>Это лечит ошибку <span class="mono">redirect_uri_mismatch</span>.</p>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">Authorized redirect URIs</span><span lang="ru">Разрешённые URI перенаправления</span></span></div>
+    <div class="bar"><span class="title">{{console-google:authorized-redirect-uris}}</span></div>
     <div class="body">
-      <div class="fld"><div class="label"><span lang="en">URIs 1</span><span lang="ru">URI 1</span> <span class="opt">не трогай</span></div><div class="input"><span class="empty">адреса, которые уже есть</span></div></div>
-      <div class="fld"><div class="label"><span lang="en">URIs 2</span><span lang="ru">URI 2</span></div><div class="input hit"><span class="v">{{redirect_uri}}</span><button class="copy" type="button">Копировать</button></div></div>
-      <div class="row"><span class="btn hit"><span lang="en">+ Add URI</span><span lang="ru">+ Добавить URI</span></span><span class="btn main hit"><span lang="en">Save</span><span lang="ru">Сохранить</span></span></div>
+      <div class="fld"><div class="label">{{console-google:uris-1}} <span class="opt">не трогай</span></div><div class="input"><span class="empty">адреса, которые уже есть</span></div></div>
+      <div class="fld"><div class="label">{{console-google:uris-2}}</div><div class="input hit"><span class="v">{{redirect_uri}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="row"><span class="btn hit">+ {{console-google:add-uri}}</span><span class="btn main hit">{{console-google:save}}</span></div>
     </div>
   </div>
-  <p>Нажми <b><span lang="en">Add URI</span><span lang="ru">Добавить URI</span></b>, вставь в новое поле адрес с рисунка — ровно так, без <span class="mono">/</span> на конце, — и нажми <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>. Уже заведённые адреса не удаляй: по ним работает вход с других машин.</p>
+  <p>Нажми <b>{{console-google:add-uri}}</b>, вставь в новое поле адрес с рисунка — ровно так, без <span class="mono">/</span> на конце, — и нажми <b>{{console-google:save}}</b>. Уже заведённые адреса не удаляй: по ним работает вход с других машин.</p>
   <p>Изменение доходит до Google за несколько минут: повтори вход на <a class="mono" href="{{site}}" target="_blank" rel="noopener">{{site}}</a> минут через пять.</p>
 </section>
 
@@ -105,14 +105,14 @@
   <h2><span class="n">3</span>Если Google пишет, что приложение заблокировано</h2>
   <p>Делай этот шаг, только если на экране было <span class="mono">access_blocked</span>, «This app is blocked» или «app has not completed the Google verification process». Иначе пропусти.</p>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">Audience</span><span lang="ru">Аудитория</span></span></div>
+    <div class="bar"><span class="title">{{console-google:audience}}</span></div>
     <div class="body">
-      <div class="row"><span class="caption"><span lang="en">Publishing status: Testing</span><span lang="ru">Статус публикации: Тестирование</span></span><span class="opt">не меняй</span></div>
-      <div class="fld"><div class="label"><span lang="en">Test users</span><span lang="ru">Тестовые пользователи</span></div><div class="input hit"><span class="empty">почта, которой ты входишь на сайт</span></div></div>
-      <div class="row"><span class="btn hit"><span lang="en">+ Add users</span><span lang="ru">+ Добавить пользователей</span></span><span class="btn main hit"><span lang="en">Save</span><span lang="ru">Сохранить</span></span></div>
+      <div class="row"><span class="caption">{{console-google:publishing-status}}: {{console-google:testing}}</span><span class="opt">не меняй</span></div>
+      <div class="fld"><div class="label">{{console-google:test-users}}</div><div class="input hit"><span class="empty">почта, которой ты входишь на сайт</span></div></div>
+      <div class="row"><span class="btn hit">+ {{console-google:add-users}}</span><span class="btn main hit">{{console-google:save}}</span></div>
     </div>
   </div>
-  <p>Слева выбери <b><span lang="en">Audience</span><span lang="ru">Аудитория</span></b>, нажми <b><span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></b>, введи адрес почты, которой входишь на сайт, и нажми <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>. <b><span lang="en">Publishing status</span><span lang="ru">Статус публикации</span></b> оставь <b>Testing</b>: публикация запускает проверку Google, для своего сайта она не нужна.</p>
+  <p>Слева выбери <b>{{console-google:audience}}</b>, нажми <b>{{console-google:add-users}}</b>, введи адрес почты, которой входишь на сайт, и нажми <b>{{console-google:save}}</b>. <b>{{console-google:publishing-status}}</b> оставь <b>Testing</b>: публикация запускает проверку Google, для своего сайта она не нужна.</p>
 </section>
 
 <section class="step" id="result">
@@ -122,7 +122,7 @@
   <p>Если нет:</p>
   <div class="table"><table>
     <tr><th>Что видно</th><th>Что делать</th></tr>
-    <tr><td>снова <span class="mono">redirect_uri_mismatch</span></td><td>раскрой на экране ошибки <b><span lang="en">error details</span><span lang="ru">сведения об ошибке</span></b> и перешли ИИ-агенту строку <span class="mono">redirect_uri=…</span> целиком</td></tr>
+    <tr><td>снова <span class="mono">redirect_uri_mismatch</span></td><td>раскрой на экране ошибки <b>{{console-google:error-details}}</b> и перешли ИИ-агенту строку <span class="mono">redirect_uri=…</span> целиком</td></tr>
     <tr><td>клиента с этим Client ID нет ни в одном проекте</td><td>напиши ИИ-агенту: клиент не найден — и назови проекты, которые видишь в списке</td></tr>
     <tr><td>экран выглядит иначе и нужного поля не найти</td><td>напиши ИИ-агенту номер шага и надписи, которые видишь</td></tr>
   </table></div>

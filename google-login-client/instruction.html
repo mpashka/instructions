@@ -77,11 +77,11 @@
   <p>Проект <b>{{project_name}}</b> уже есть (выбери его в шапке консоли) — пропусти шаги 1 и 2 и начни с шага 3.</p>
   <p>Нет — открой <a class="mono" href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">https://console.cloud.google.com/projectcreate</a> и войди своим аккаунтом Google.</p>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">New Project</span><span lang="ru">Новый проект</span></span></div>
+    <div class="bar"><span class="title">{{console-google:new-project}}</span></div>
     <div class="body">
-      <div class="fld hit"><div class="label"><span lang="en">Project name</span><span lang="ru">Название проекта</span></div><div class="input"><span class="v">{{project_name}}</span><button class="copy" type="button">Копировать</button></div></div>
-      <div class="fld"><div class="label"><span lang="en">Location</span><span lang="ru">Местоположение</span> <span class="opt">как предложено</span></div><div class="input"><span class="empty">No organization</span></div></div>
-      <span class="btn main hit"><span lang="en">Create</span><span lang="ru">Создать</span></span>
+      <div class="fld hit"><div class="label">{{console-google:project-name}}</div><div class="input"><span class="v">{{project_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">{{console-google:location}} <span class="opt">как предложено</span></div><div class="input"><span class="empty">No organization</span></div></div>
+      <span class="btn main hit">{{console-google:create}}</span>
     </div>
   </div>
   <p>Дождись уведомления о создании и проверь, что в шапке консоли выбран проект <b>{{project_name}}</b>. Выбран другой — нажми на имя проекта в шапке и выбери нужный.</p>
@@ -89,73 +89,73 @@
 
 <section class="step" id="branding">
   <h2><span class="n">2</span>Экран входа: название и почта</h2>
-  <p>Открой <a class="mono" href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">https://console.cloud.google.com/auth/overview</a> и нажми <b><span lang="en">Get started</span><span lang="ru">Начать</span></b>. Мастер из четырёх шагов:</p>
+  <p>Открой <a class="mono" href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">https://console.cloud.google.com/auth/overview</a> и нажми <b>{{console-google:get-started}}</b>. Мастер из четырёх шагов:</p>
   <div class="screen">
     <div class="bar"><span class="title">Google Auth Platform</span></div>
     <div class="body">
-      <div class="caption">1 · <span lang="en">App Information</span><span lang="ru">Информация о приложении</span></div>
-      <div class="fld hit"><div class="label"><span lang="en">App name</span><span lang="ru">Название приложения</span></div><div class="input"><span class="v">{{app_name}}</span><button class="copy" type="button">Копировать</button></div></div>
-      <div class="fld hit"><div class="label"><span lang="en">User support email</span><span lang="ru">Адрес электронной почты службы поддержки</span></div><div class="input"><span class="empty">выбери свою почту из списка</span></div></div>
-      <span class="btn"><span lang="en">Next</span><span lang="ru">Далее</span></span>
-      <div class="caption" style="margin-top:12px">2 · <span lang="en">Audience</span><span lang="ru">Аудитория</span></div>
-      <div class="row"><span class="hit">◉ <span lang="en">External</span><span lang="ru">Внешний</span></span><span class="caption">○ <span lang="en">Internal</span><span lang="ru">Внутренний</span></span></div>
-      <span class="btn"><span lang="en">Next</span><span lang="ru">Далее</span></span>
-      <div class="caption" style="margin-top:12px">3 · <span lang="en">Contact Information</span><span lang="ru">Контактная информация</span></div>
-      <div class="fld hit"><div class="label"><span lang="en">Email addresses</span><span lang="ru">Адреса электронной почты</span></div><div class="input"><span class="empty">твоя почта</span></div></div>
-      <span class="btn"><span lang="en">Next</span><span lang="ru">Далее</span></span>
-      <div class="caption" style="margin-top:12px">4 · <span lang="en">Finish</span><span lang="ru">Готово</span></div>
-      <div class="row"><span class="hit">☑ <span lang="en">I agree to the Google API Services: User Data Policy</span><span lang="ru">Я принимаю Правила в отношении пользовательских данных в сервисах Google API</span></span></div>
-      <span class="btn"><span lang="en">Continue</span><span lang="ru">Продолжить</span></span> <span class="btn main hit"><span lang="en">Create</span><span lang="ru">Создать</span></span>
+      <div class="caption">1 · {{console-google:app-information}}</div>
+      <div class="fld hit"><div class="label">{{console-google:app-name}}</div><div class="input"><span class="v">{{app_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld hit"><div class="label">{{console-google:user-support-email}}</div><div class="input"><span class="empty">выбери свою почту из списка</span></div></div>
+      <span class="btn">{{console-google:next}}</span>
+      <div class="caption" style="margin-top:12px">2 · {{console-google:audience}}</div>
+      <div class="row"><span class="hit">◉ {{console-google:external}}</span><span class="caption">○ {{console-google:internal}}</span></div>
+      <span class="btn">{{console-google:next}}</span>
+      <div class="caption" style="margin-top:12px">3 · {{console-google:contact-information}}</div>
+      <div class="fld hit"><div class="label">{{console-google:email-addresses}}</div><div class="input"><span class="empty">твоя почта</span></div></div>
+      <span class="btn">{{console-google:next}}</span>
+      <div class="caption" style="margin-top:12px">4 · {{console-google:finish}}</div>
+      <div class="row"><span class="hit">☑ {{console-google:user-data-policy-agreement}}</span></div>
+      <span class="btn">{{console-google:continue}}</span> <span class="btn main hit">{{console-google:create}}</span>
     </div>
   </div>
 </section>
 
 <section class="step" id="test-users">
   <h2><span class="n">3</span>Тестовые пользователи</h2>
-  <p>Слева раздел <b><span lang="en">Audience</span><span lang="ru">Аудитория</span></b>, внизу страницы <b>+ <span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></b>. Впиши через запятую почты Google всех, кто будет входить: свою и семьи, потом <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>.</p>
+  <p>Слева раздел <b>{{console-google:audience}}</b>, внизу страницы <b>+ {{console-google:add-users}}</b>. Впиши через запятую почты Google всех, кто будет входить: свою и семьи, потом <b>{{console-google:save}}</b>.</p>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">Audience</span><span lang="ru">Аудитория</span></span></div>
+    <div class="bar"><span class="title">{{console-google:audience}}</span></div>
     <div class="body">
-      <div class="fld"><div class="label"><span lang="en">Publishing status</span><span lang="ru">Статус публикации</span></div><div class="row"><span><span lang="en">Testing</span><span lang="ru">Тестирование</span></span> <span class="btn"><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></span> <span class="opt">не нажимать</span></div></div>
-      <div class="fld"><div class="label"><span lang="en">Test users</span><span lang="ru">Тестовые пользователи</span></div><span class="btn hit">+ <span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></span></div>
+      <div class="fld"><div class="label">{{console-google:publishing-status}}</div><div class="row"><span>{{console-google:testing}}</span> <span class="btn">{{console-google:publish-app}}</span> <span class="opt">не нажимать</span></div></div>
+      <div class="fld"><div class="label">{{console-google:test-users}}</div><span class="btn hit">+ {{console-google:add-users}}</span></div>
     </div>
   </div>
-  <p>Приложение остаётся в статусе <b><span lang="en">Testing</span><span lang="ru">Тестирование</span></b>: войти смогут только эти адреса, до 100 человек. Кнопка <b><span lang="en">Publish app</span><span lang="ru">Опубликовать приложение</span></b> серая, пока не дозаполнена страница <b><span lang="en">Branding</span><span lang="ru">Брендинг</span></b>; публикация нужна только открытому сайту — сейчас не публикуй. Добавить человека позже — тот же раздел. В проекте, заведённом раньше, список уже есть — проверь, что все нужные адреса в нём.</p>
+  <p>Приложение остаётся в статусе <b>{{console-google:testing}}</b>: войти смогут только эти адреса, до 100 человек. Кнопка <b>{{console-google:publish-app}}</b> серая, пока не дозаполнена страница <b>{{console-google:branding}}</b>; публикация нужна только открытому сайту — сейчас не публикуй. Добавить человека позже — тот же раздел. В проекте, заведённом раньше, список уже есть — проверь, что все нужные адреса в нём.</p>
 </section>
 
 <section class="step" id="client">
   <h2><span class="n">4</span>Создать клиента</h2>
-  <p>Слева раздел <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → <b><span lang="en">Create client</span><span lang="ru">Создать клиента</span></b>.</p>
+  <p>Слева раздел <b>{{console-google:clients}}</b> → <b>{{console-google:create-client}}</b>.</p>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">Create OAuth client ID</span><span lang="ru">Создание идентификатора клиента OAuth</span></span></div>
+    <div class="bar"><span class="title">{{console-google:create-oauth-client-id}}</span></div>
     <div class="body">
-      <div class="fld hit"><div class="label"><span lang="en">Application type</span><span lang="ru">Тип приложения</span></div><div class="input"><span class="v"><span lang="en">Web application</span><span lang="ru">Веб-приложение</span></span></div></div>
-      <div class="fld hit"><div class="label"><span lang="en">Name</span><span lang="ru">Название</span></div><div class="input"><span class="v">{{client_name}}</span><button class="copy" type="button">Копировать</button></div></div>
-      <div class="fld"><div class="label"><span lang="en">Authorized JavaScript origins</span><span lang="ru">Разрешенные источники JavaScript</span> <span class="opt">оставь пустым</span></div></div>
-      <div class="fld"><div class="label"><span lang="en">Authorized redirect URIs</span><span lang="ru">Разрешенные URI перенаправления</span></div>
+      <div class="fld hit"><div class="label">{{console-google:application-type}}</div><div class="input"><span class="v">{{console-google:web-application}}</span></div></div>
+      <div class="fld hit"><div class="label">{{console-google:name}}</div><div class="input"><span class="v">{{client_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">{{console-google:authorized-javascript-origins}} <span class="opt">оставь пустым</span></div></div>
+      <div class="fld"><div class="label">{{console-google:authorized-redirect-uris}}</div>
         <div class="lines">{{redirect_uris}}</div>
-        <span class="btn hit">+ <span lang="en">Add URI</span><span lang="ru">Добавить URI</span></span>
+        <span class="btn hit">+ {{console-google:add-uri}}</span>
       </div>
-      <span class="btn main hit"><span lang="en">Create</span><span lang="ru">Создать</span></span>
+      <span class="btn main hit">{{console-google:create}}</span>
     </div>
   </div>
-  <p>В <b><span lang="en">Authorized redirect URIs</span><span lang="ru">Разрешенные URI перенаправления</span></b> на каждый адрес с рисунка — <b>+ <span lang="en">Add URI</span><span lang="ru">Добавить URI</span></b> и вставка кнопкой «Копировать». Адреса — ровно такие, без <span class="mono">/</span> на конце. Потом <b><span lang="en">Create</span><span lang="ru">Создать</span></b>.</p>
+  <p>В <b>{{console-google:authorized-redirect-uris}}</b> на каждый адрес с рисунка — <b>+ {{console-google:add-uri}}</b> и вставка кнопкой «Копировать». Адреса — ровно такие, без <span class="mono">/</span> на конце. Потом <b>{{console-google:create}}</b>.</p>
 </section>
 
 <section class="step" id="save">
   <h2><span class="n">5</span>Сохранить ключи командой</h2>
   <div class="screen">
-    <div class="bar"><span class="title"><span lang="en">OAuth client created</span><span lang="ru">Клиент OAuth создан</span></span></div>
+    <div class="bar"><span class="title">{{console-google:oauth-client-created}}</span></div>
     <div class="body">
-      <div class="fld"><div class="label"><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></div><div class="input"><span class="empty">1234567890-….apps.googleusercontent.com</span></div></div>
-      <div class="fld"><div class="label"><span lang="en">Client secret</span><span lang="ru">Секрет клиента</span></div><div class="input"><span class="empty">GOCSPX-…</span></div></div>
-      <span class="btn hit"><span lang="en">Download JSON</span><span lang="ru">Скачать JSON</span></span> <span class="btn"><span lang="en">OK</span><span lang="ru">ОК</span></span>
+      <div class="fld"><div class="label">{{console-google:client-id}}</div><div class="input"><span class="empty">1234567890-….apps.googleusercontent.com</span></div></div>
+      <div class="fld"><div class="label">{{console-google:client-secret}}</div><div class="input"><span class="empty">GOCSPX-…</span></div></div>
+      <span class="btn hit">{{console-google:download-json}}</span> <span class="btn">{{console-google:ok}}</span>
     </div>
   </div>
-  <p>Нажми <b><span lang="en">Download JSON</span><span lang="ru">Скачать JSON</span></b> — в «Загрузках» появится файл <span class="mono">client_secret_….json</span>. Открой терминал и запусти команду, дописав через пробел путь к этому файлу:</p>
+  <p>Нажми <b>{{console-google:download-json}}</b> — в «Загрузках» появится файл <span class="mono">client_secret_….json</span>. Открой терминал и запусти команду, дописав через пробел путь к этому файлу:</p>
   <div class="input"><span class="v">{{save_command}}</span><button class="copy" type="button">Копировать</button></div>
   <p>Удалось, если команда напечатала строку, начинающуюся с <b>ГОТОВО</b>. Скачанный файл команда удаляет сама — секрет остаётся только в хранилище.</p>
-  <p class="caption">Окно закрылось без скачивания — секрет второй раз не показывают: <b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b> → клиент {{client_name}} → <b><span lang="en">Add secret</span><span lang="ru">Добавить секрет</span></b>, и скачай JSON заново.</p>
+  <p class="caption">Окно закрылось без скачивания — секрет второй раз не показывают: <b>{{console-google:clients}}</b> → клиент {{client_name}} → <b>{{console-google:add-secret}}</b>, и скачай JSON заново.</p>
 </section>
 
 <section class="step" id="result">
