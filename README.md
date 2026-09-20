@@ -5,7 +5,7 @@
 стоят значения задачи — адреса, имена, секреты. По ней идут сверху вниз, не сверяясь ни с какой
 таблицей параметров.
 
-Правило, по которому пишутся инструкции, — `~/Projects/github/m_pashka/ai/rules/user-instructions.md`.
+Правило, по которому пишутся инструкции, — `~/Projects/github/m_pashka/ai/rules-on-demand/user-instructions.md`.
 
 Репозиторий — `git@github.com:mpashka/instructions.git`, **публичный**: ничего рабочего, личного и
 секретного. Конкретные значения живут в файле значений у задачи.
@@ -57,6 +57,10 @@ chatgpt-gpt-oauth-action:
 | `instruction.html` | инструкция с экранами: рисунок диалога, обведено что нажимать, кнопки «Копировать» у значений |
 | `instruction.md` | инструкция без экранов, где рисунок ничего не добавляет |
 
+🚨 **Человек ищет поле или кнопку на чужом сайте — это `instruction.html`**, даже если шагов два.
+Markdown остаётся команде в терминале, файлу и выбору из своего же списка. Соседний шаблон в
+Markdown образцом не является: формат выбирается по этому правилу, а не по тому, как сделан сосед.
+
 - Место подстановки — `{{имя_поля}}` (строчные латинские, цифры, `_`). В HTML значение
   экранируется, в Markdown — нет. Поле в тексте без объявления в `fields.yaml` и объявление без
   поля в тексте — ошибка.
@@ -85,9 +89,9 @@ chatgpt-gpt-oauth-action:
 
 - [chatgpt-gpt-oauth-action](chatgpt-gpt-oauth-action/) — приватный GPT с действием на OAuth: URL-адрес обратного вызова, проверка «Тест» (HTML)
 - [google-login-client](google-login-client/) — завести OAuth-клиент Google для входа на сайт, ключи — командой в терминале (HTML, EN/RU)
-- [google-oauth-client-fix](google-oauth-client-fix/) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи
+- [google-oauth-client-fix](google-oauth-client-fix/) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи (HTML, EN/RU)
 - [cloudflare-web-analytics](cloudflare-web-analytics/) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
 - [llm-chat-answer](llm-chat-answer/) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
 - [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку (HTML)
 - [yandex-login-client](yandex-login-client/) — завести приложение Яндекс ID для входа на сайт, ключи — командой в терминале (HTML)
-- [yandex-oauth-client-fix](yandex-oauth-client-fix/) — вход через Яндекс отклонён: добавить приложению адрес возврата
+- [yandex-oauth-client-fix](yandex-oauth-client-fix/) — вход через Яндекс отклонён: добавить приложению адрес возврата (HTML)

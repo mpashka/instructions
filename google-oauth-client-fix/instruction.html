@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход через Google на {{site}} отклонён</title>
+<style>
+  :root { --bg:#f6f6f4; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#d6d6d0;
+          --accent:#2f6fd6; --hit:#e8f0ff; --warn:#fff3c4; --warn-ink:#6a5200; --opt:#e3efe3; --opt-ink:#2f5d2f;
+          --screen:#fbfbfa; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1b1a; --card:#262624; --ink:#ecece8; --muted:#a3a39c; --line:#44443f;
+            --accent:#6fa0ff; --hit:#22314d; --warn:#4a3f12; --warn-ink:#ffe7a0; --opt:#23402a; --opt-ink:#bfe3c3;
+            --screen:#1f1f1e; }
+  }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:820px; margin:0 auto; }
+  html[data-lang="ru"] [lang="en"], html[data-lang="en"] [lang="ru"] { display:none; }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  h1 { font-size:22px; margin:0; }
+  .langs button { font:inherit; font-size:13px; padding:3px 12px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+  .langs button:first-child { border-radius:6px 0 0 6px; }
+  .langs button:last-child { border-radius:0 6px 6px 0; border-left:0; }
+  html[data-lang="ru"] .langs [data-set="ru"], html[data-lang="en"] .langs [data-set="en"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .meta { color:var(--muted); font-size:13px; }
+  .template-note, .warn { background:var(--warn); color:var(--warn-ink); border-radius:8px; padding:10px 14px; margin:14px 0; }
+  section.step { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:18px 0; }
+  section.step > h2 { margin:0 0 6px; font-size:17px; }
+  section.step > h2 .n { display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center;
+                          border-radius:13px; background:var(--accent); color:#fff; font-size:14px; margin-right:6px; }
+  .screen { border:1px solid var(--line); border-radius:8px; background:var(--screen); margin:12px 0 4px; overflow:hidden; font-size:14px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--line); }
+  .bar .title { font-weight:600; }
+  .body { padding:12px; }
+  .btn { display:inline-block; padding:4px 12px; border-radius:6px; border:1px solid var(--line); background:var(--card); }
+  .btn.main { background:#1a73e8; color:#fff; border-color:#1a73e8; }
+  .fld { margin:10px 0; }
+  .fld > .label { font-size:13px; font-weight:600; }
+  .input { display:flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:6px;
+           padding:5px 8px; min-height:22px; background:var(--card); margin:4px 0; }
+  .input .v { flex:1; min-width:0; font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; white-space:pre-wrap; }
+  .input .empty { flex:1; min-width:0; color:var(--muted); overflow-wrap:anywhere; }
+  .input > span:last-child:not(.v):not(.empty) { flex:none; }
+  .hit { outline:2px solid var(--accent); outline-offset:2px; background:var(--hit); border-radius:6px; }
+  .opt { font-size:12px; background:var(--opt); color:var(--opt-ink); padding:0 6px; border-radius:4px; margin-left:6px; font-weight:400; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:4px 0; }
+  a { color:var(--accent); }
+  .mono { font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  button.copy { font:12px system-ui, sans-serif; padding:2px 8px; border-radius:4px; border:1px solid var(--line);
+                background:var(--card); color:var(--ink); cursor:pointer; white-space:nowrap; }
+  button.copy.done { background:var(--opt); color:var(--opt-ink); }
+  .caption { color:var(--muted); font-size:13px; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td, th { border-top:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  .table { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+<!-- template-note:begin -->
+<div class="template-note">🚨 <b>Шаблон, а не инструкция.</b> <code>{{…}}</code> — места для значений; готовую инструкцию собирает <code>render</code> (README репозитория).</div>
+<!-- template-note:end -->
+<header>
+  <h1>Вход через Google на {{site}} отклонён</h1>
+  <div class="langs" role="group" aria-label="Язык консоли Google">
+    <button type="button" data-set="en">EN</button><button type="button" data-set="ru">RU</button>
+  </div>
+</header>
+<p>Починить две самые частые ошибки входа через Google: <span class="mono">redirect_uri_mismatch</span> и <span class="mono">access_blocked</span> («приложение не проверено»). OAuth-клиент Google уже заведён, новый создавать не надо. Время — минуты 3.</p>
+<p><b>ИИ-агент</b> — Claude, Codex или другой ИИ-агент, от которого ты получил эту инструкцию.</p>
+<p class="meta">Переключатель <b>EN / RU</b> справа вверху — язык консоли Google, выбери тот, что у тебя на экране. Составлена 2026-09-20 по документации Google, экраны не сверены: если надпись отличается — ищи по смыслу и расположению. Рисунки упрощены, обведено то, что нажимать или заполнять. Кнопка «Копировать» кладёт значение в буфер обмена.</p>
+
+<section class="step" id="find">
+  <h2><span class="n">1</span>Найти клиент</h2>
+  <p>Открой <a class="mono" href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener">https://console.cloud.google.com/auth/clients</a>. Вверху слева — выбор проекта: перебери проекты, пока в списке клиентов не окажется строка с этим <b><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></b>:</p>
+  <div class="input"><span class="v">{{google_client_id}}</span><button class="copy" type="button">Копировать</button></div>
+  <div class="screen">
+    <div class="bar"><span class="title"><span lang="en">OAuth 2.0 Client IDs</span><span lang="ru">Идентификаторы клиентов OAuth 2.0</span></span></div>
+    <div class="body">
+      <div class="table"><table>
+        <tr><th><span lang="en">Name</span><span lang="ru">Название</span></th><th><span lang="en">Client ID</span><span lang="ru">Идентификатор клиента</span></th></tr>
+        <tr><td><span class="hit"><span lang="en">open this one</span><span lang="ru">открой эту строку</span></span></td><td><span class="mono">{{google_client_id}}</span></td></tr>
+      </table></div>
+    </div>
+  </div>
+  <p>Нажми на название клиента в этой строке — откроется его страница.</p>
+</section>
+
+<section class="step" id="redirect">
+  <h2><span class="n">2</span>Добавить адрес возврата</h2>
+  <p>Это лечит ошибку <span class="mono">redirect_uri_mismatch</span>.</p>
+  <div class="screen">
+    <div class="bar"><span class="title"><span lang="en">Authorized redirect URIs</span><span lang="ru">Разрешённые URI перенаправления</span></span></div>
+    <div class="body">
+      <div class="fld"><div class="label"><span lang="en">URIs 1</span><span lang="ru">URI 1</span> <span class="opt">не трогай</span></div><div class="input"><span class="empty">адреса, которые уже есть</span></div></div>
+      <div class="fld"><div class="label"><span lang="en">URIs 2</span><span lang="ru">URI 2</span></div><div class="input hit"><span class="v">{{redirect_uri}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="row"><span class="btn hit"><span lang="en">+ Add URI</span><span lang="ru">+ Добавить URI</span></span><span class="btn main hit"><span lang="en">Save</span><span lang="ru">Сохранить</span></span></div>
+    </div>
+  </div>
+  <p>Нажми <b><span lang="en">Add URI</span><span lang="ru">Добавить URI</span></b>, вставь в новое поле адрес с рисунка — ровно так, без <span class="mono">/</span> на конце, — и нажми <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>. Уже заведённые адреса не удаляй: по ним работает вход с других машин.</p>
+  <p>Изменение доходит до Google за несколько минут: повтори вход на <a class="mono" href="{{site}}" target="_blank" rel="noopener">{{site}}</a> минут через пять.</p>
+</section>
+
+<section class="step" id="testers">
+  <h2><span class="n">3</span>Если Google пишет, что приложение заблокировано</h2>
+  <p>Делай этот шаг, только если на экране было <span class="mono">access_blocked</span>, «This app is blocked» или «app has not completed the Google verification process». Иначе пропусти.</p>
+  <div class="screen">
+    <div class="bar"><span class="title"><span lang="en">Audience</span><span lang="ru">Аудитория</span></span></div>
+    <div class="body">
+      <div class="row"><span class="caption"><span lang="en">Publishing status: Testing</span><span lang="ru">Статус публикации: Тестирование</span></span><span class="opt">не меняй</span></div>
+      <div class="fld"><div class="label"><span lang="en">Test users</span><span lang="ru">Тестовые пользователи</span></div><div class="input hit"><span class="empty">почта, которой ты входишь на сайт</span></div></div>
+      <div class="row"><span class="btn hit"><span lang="en">+ Add users</span><span lang="ru">+ Добавить пользователей</span></span><span class="btn main hit"><span lang="en">Save</span><span lang="ru">Сохранить</span></span></div>
+    </div>
+  </div>
+  <p>Слева выбери <b><span lang="en">Audience</span><span lang="ru">Аудитория</span></b>, нажми <b><span lang="en">Add users</span><span lang="ru">Добавить пользователей</span></b>, введи адрес почты, которой входишь на сайт, и нажми <b><span lang="en">Save</span><span lang="ru">Сохранить</span></b>. <b><span lang="en">Publishing status</span><span lang="ru">Статус публикации</span></b> оставь <b>Testing</b>: публикация запускает проверку Google, для своего сайта она не нужна.</p>
+</section>
+
+<section class="step" id="result">
+  <h2>Вернуть ИИ-агенту</h2>
+  <p>Вход через Google возвращает на сайт без экрана ошибки — напиши ИИ-агенту:</p>
+  <div class="input"><span class="v">адрес возврата Google добавлен</span><button class="copy" type="button">Копировать</button></div>
+  <p>Если нет:</p>
+  <div class="table"><table>
+    <tr><th>Что видно</th><th>Что делать</th></tr>
+    <tr><td>снова <span class="mono">redirect_uri_mismatch</span></td><td>раскрой на экране ошибки <b><span lang="en">error details</span><span lang="ru">сведения об ошибке</span></b> и перешли ИИ-агенту строку <span class="mono">redirect_uri=…</span> целиком</td></tr>
+    <tr><td>клиента с этим Client ID нет ни в одном проекте</td><td>напиши ИИ-агенту: клиент не найден — и назови проекты, которые видишь в списке</td></tr>
+    <tr><td>экран выглядит иначе и нужного поля не найти</td><td>напиши ИИ-агенту номер шага и надписи, которые видишь</td></tr>
+  </table></div>
+</section>
+</main>
+<script>
+  document.querySelectorAll("button.copy").forEach(button => button.addEventListener("click", async () => {
+    const value = button.previousElementSibling;
+    try {
+      await navigator.clipboard.writeText(value.textContent);
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(value);
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand("copy");
+      selection.removeAllRanges();
+    }
+    button.textContent = "Скопировано";
+    button.classList.add("done");
+    setTimeout(() => { button.textContent = "Копировать"; button.classList.remove("done"); }, 1500);
+  }));
+  document.querySelectorAll(".langs button").forEach(button => button.addEventListener("click", () => {
+    document.documentElement.dataset.lang = button.dataset.set;
+  }));
+</script>
+</body>
+</html>
