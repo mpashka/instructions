@@ -1,0 +1,11 @@
+title: вход через Яндекс отклонён — адрес возврата приложения
+fields:
+  site:
+    about: адрес сайта, на котором не работает вход
+    example: https://app.example.org/
+  yandex_client_id:
+    about: ClientID приложения Яндекс ID (32 символа, по нему приложение открывается прямой ссылкой)
+    example: 0123456789abcdef0123456789abcdef
+  redirect_uri:
+    about: адрес возврата ровно так, как его шлёт сайт
+    example: https://app.example.org/api/auth/yandex/callback

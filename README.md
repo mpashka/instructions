@@ -90,3 +90,4 @@ chatgpt-gpt-oauth-action:
 - [llm-chat-answer](llm-chat-answer/) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
 - [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку (HTML)
 - [yandex-login-client](yandex-login-client/) — завести приложение Яндекс ID для входа на сайт, ключи — командой в терминале (HTML)
+- [yandex-oauth-client-fix](yandex-oauth-client-fix/) — вход через Яндекс отклонён: добавить приложению адрес возврата
