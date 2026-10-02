@@ -122,6 +122,7 @@ labels:
 ## Шаблоны
 
 - [chatgpt-gpt-oauth-action](chatgpt-gpt-oauth-action/) — приватный GPT с действием на OAuth: URL-адрес обратного вызова, проверка «Тест» (HTML)
+- [google-app-password](google-app-password/) — пароль приложения Google для доступа программы к почте: двухэтапная аутентификация, 16 букв, запись командой (HTML, EN/RU)
 - [google-login-client](google-login-client/) — завести OAuth-клиент Google для входа на сайт, ключи — командой в терминале (HTML, EN/RU)
 - [google-oauth-client-fix](google-oauth-client-fix/) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи (HTML, EN/RU)
 - [cloudflare-web-analytics](cloudflare-web-analytics/) — завести сайт в Cloudflare Web Analytics и получить токен счётчика

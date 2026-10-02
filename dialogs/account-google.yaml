@@ -1,0 +1,19 @@
+# Описание диалогов аккаунта Google: универсальное имя → надпись на языке интерфейса.
+# Шаблон инструкции ссылается на надпись как {{account-google:<имя>}} — README репозитория.
+#
+# 🚨 Надписи взяты из справки Google, с живым экраном их не сверяли: ИИ-агент в аккаунт не
+# заходит. Первый человек, прошедший инструкцию, сверяет их и правит этот файл с датой `checked`.
+site: myaccount.google.com
+checked: 2026-10-02
+languages: [en, ru]
+labels:
+  app-name: {en: "App name", ru: "Название приложения"}
+  app-passwords: {en: "App passwords", ru: "Пароли приложений"}
+  create: {en: "Create", ru: "Создать"}
+  done: {en: "Done", ru: "Готово"}
+  generated-app-password: {en: "Generated app password", ru: "Сгенерированный пароль приложения"}
+  how-you-sign-in: {en: "How you sign in to Google", ru: "Вход в аккаунт Google"}
+  security: {en: "Security", ru: "Безопасность"}
+  turn-on: {en: "Turn on", ru: "Включить"}
+  two-step-verification: {en: "2-Step Verification", ru: "Двухэтапная аутентификация"}
+  your-app-passwords: {en: "Your app passwords", ru: "Ваши пароли приложений"}

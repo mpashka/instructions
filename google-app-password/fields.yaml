@@ -1,0 +1,14 @@
+title: создать пароль приложения Google для доступа программы к почте и записать его командой
+fields:
+  account:
+    about: адрес аккаунта Google, которому создаётся пароль приложения
+    example: name@gmail.com
+  app_label:
+    about: имя, которое вписывается в поле «Название приложения» и под которым пароль видно в списке
+    example: mail-reader-imap
+  save_command:
+    about: команда, которая спрашивает пароль скрытым вводом и кладёт его в хранилище; значение в аргументах не передаётся
+    example: ~/bin/save-app-password name@gmail.com mail-reader-imap
+  return_line:
+    about: строка, которую человек пишет ИИ-агенту, когда пароль записан
+    example: пароль приложения mail-reader-imap записан
