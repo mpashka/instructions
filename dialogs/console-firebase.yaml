@@ -1,12 +1,13 @@
 # Описание диалогов консоли Firebase: универсальное имя → надпись на языке интерфейса.
 # Шаблон инструкции ссылается на надпись как {{console-firebase:<имя>}} — README репозитория.
 #
-# 🚨 Надписи взяты из документации Firebase, с живым экраном их не сверяли: ИИ-агент в консоль не
-# заходит. Первый человек, прошедший инструкцию, сверяет их и правит этот файл с датой `checked`.
+# Английские надписи сверены с живой консолью 2026-10-10 (ИИ-агент прошёл её в headless-профиле браузера);
+# русские — по документации, с экраном не сверены.
 site: console.firebase.google.com
 checked: 2026-10-10
 languages: [en, ru]
 labels:
+  accept-terms: {en: "I accept the Firebase terms", ru: "Я принимаю условия Firebase"}
   add-app: {en: "Add app", ru: "Добавить приложение"}
   add-firebase-to-gcp: {en: "Add Firebase to Google Cloud project", ru: "Добавить Firebase в проект Google Cloud"}
   android-package-name: {en: "Android package name", ru: "Название пакета Android"}
@@ -15,7 +16,7 @@ labels:
   continue: {en: "Continue", ru: "Продолжить"}
   continue-to-console: {en: "Continue to console", ru: "Перейти в консоль"}
   debug-signing-certificate: {en: "Debug signing certificate SHA-1", ru: "Сертификат подписи отладки SHA-1"}
-  download-google-services-json: {en: "Download google-services.json", ru: "Скачать google-services.json"}
+  download-google-services-json: {en: "Download Android configuration file", ru: "Скачать файл конфигурации Android"}
   enable-google-analytics: {en: "Enable Google Analytics for this project", ru: "Включить Google Analytics для этого проекта"}
   firebase-admin-sdk: {en: "Firebase Admin SDK", ru: "Firebase Admin SDK"}
   generate-key: {en: "Generate key", ru: "Создать ключ"}

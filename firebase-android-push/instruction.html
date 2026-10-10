@@ -80,12 +80,13 @@
     <div class="bar"><span class="title">Firebase</span></div>
     <div class="body">
       <div class="fld hit"><div class="label">{{console-firebase:select-a-project}}</div><div class="input"><span class="v">{{project_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="row"><span class="hit">☑ {{console-firebase:accept-terms}}</span></div>
       <span class="btn main hit">{{console-firebase:continue}}</span>
       <div class="row" style="margin-top:12px"><span class="hit">○ {{console-firebase:enable-google-analytics}}</span> <span class="opt">выключить</span></div>
       <span class="btn main hit">{{console-firebase:continue}}</span>
     </div>
   </div>
-  <p>По пути Firebase попросит принять условия и подтвердить тариф — соглашайся с тарифом <b>Spark</b>, платёжный аккаунт не нужен. Помощник Gemini — как предложено, на работу не влияет. Удалось, если открылась страница проекта <b>{{project_name}}</b> в Firebase.</p>
+  <p>Экран предупреждений перед подключением упоминает тариф <b>Blaze</b> (оплата по факту) — значит, к проекту привязан платёжный аккаунт, и Firebase встанет на него. Уведомлениям оплата не нужна: если платные службы в проекте не используются, сначала отключи оплату у проекта (<a class="mono" href="https://console.cloud.google.com/billing/projects" target="_blank" rel="noopener">https://console.cloud.google.com/billing/projects</a> → у проекта «⋮» → Disable billing), потом подключай — встанет бесплатный <b>Spark</b>. Помощник Gemini — как предложено, на работу не влияет. Удалось, если открылась страница проекта <b>{{project_name}}</b> в Firebase.</p>
 </section>
 
 <section class="step" id="app">
