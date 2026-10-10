@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Пуш-уведомления: Firebase для «{{app_nickname}}»</title>
+<style>
+  :root { --bg:#f6f6f4; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#d6d6d0;
+          --accent:#2f6fd6; --hit:#e8f0ff; --warn:#fff3c4; --warn-ink:#6a5200; --opt:#e3efe3; --opt-ink:#2f5d2f;
+          --screen:#fbfbfa; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1b1a; --card:#262624; --ink:#ecece8; --muted:#a3a39c; --line:#44443f;
+            --accent:#6fa0ff; --hit:#22314d; --warn:#4a3f12; --warn-ink:#ffe7a0; --opt:#23402a; --opt-ink:#bfe3c3;
+            --screen:#1f1f1e; }
+  }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:820px; margin:0 auto; }
+  html[data-lang="ru"] [lang="en"], html[data-lang="en"] [lang="ru"] { display:none; }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  h1 { font-size:22px; margin:0; }
+  .langs button { font:inherit; font-size:13px; padding:3px 12px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+  .langs button:first-child { border-radius:6px 0 0 6px; }
+  .langs button:last-child { border-radius:0 6px 6px 0; border-left:0; }
+  html[data-lang="ru"] .langs [data-set="ru"], html[data-lang="en"] .langs [data-set="en"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .meta { color:var(--muted); font-size:13px; }
+  .template-note, .warn { background:var(--warn); color:var(--warn-ink); border-radius:8px; padding:10px 14px; margin:14px 0; }
+  section.step { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:18px 0; }
+  section.step > h2 { margin:0 0 6px; font-size:17px; }
+  section.step > h2 .n { display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center;
+                          border-radius:13px; background:var(--accent); color:#fff; font-size:14px; margin-right:6px; }
+  .screen { border:1px solid var(--line); border-radius:8px; background:var(--screen); margin:12px 0 4px; overflow:hidden; font-size:14px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--line); }
+  .bar .title { font-weight:600; }
+  .body { padding:12px; }
+  .btn { display:inline-block; padding:4px 12px; border-radius:6px; border:1px solid var(--line); background:var(--card); }
+  .btn.main { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .fld { margin:10px 0; }
+  .fld > .label { font-size:13px; font-weight:600; }
+  .input { display:flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:6px;
+           padding:5px 8px; min-height:22px; background:var(--card); margin:4px 0; }
+  .input .v { flex:1; min-width:0; font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; white-space:pre-wrap; }
+  .input .empty { flex:1; min-width:0; color:var(--muted); overflow-wrap:anywhere; }
+  .input > span:last-child:not(.v):not(.empty) { flex:none; }
+  .hit { outline:2px solid var(--accent); outline-offset:2px; background:var(--hit); border-radius:6px; }
+  .opt { font-size:12px; background:var(--opt); color:var(--opt-ink); padding:0 6px; border-radius:4px; margin-left:6px; font-weight:400; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:4px 0; }
+  a { color:var(--accent); }
+  .mono { font-family:ui-monospace, monospace; font-size:13px; overflow-wrap:anywhere; }
+  button.copy { font:12px system-ui, sans-serif; padding:2px 8px; border-radius:4px; border:1px solid var(--line);
+                background:var(--card); color:var(--ink); cursor:pointer; white-space:nowrap; }
+  button.copy.done { background:var(--opt); color:var(--opt-ink); }
+  .caption { color:var(--muted); font-size:13px; }
+  .lines { display:none; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td, th { border-top:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  .table { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+<!-- template-note:begin -->
+<div class="template-note">🚨 <b>Шаблон, а не инструкция.</b> <code>{{…}}</code> — места для значений; готовую инструкцию собирает <code>render</code> (README репозитория).</div>
+<!-- template-note:end -->
+<header>
+  <h1>Пуш-уведомления: Firebase для «{{app_nickname}}»</h1>
+  <div class="langs" role="group" aria-label="Язык консоли Firebase">
+    <button type="button" data-set="en">EN</button><button type="button" data-set="ru">RU</button>
+  </div>
+</header>
+<p>Подключить Firebase к проекту Google Cloud <b>{{project_name}}</b>, завести в нём приложение Android <span class="mono">{{package_name}}</span> и сохранить командой два скачанных файла: настройки приложения и ключ, которым сервер отправляет уведомления. Платить ничего не надо: бесплатного тарифа Spark хватает. Время — минут 10.</p>
+<p><b>ИИ-агент</b> — Claude, Codex или другой ИИ-агент, от которого ты получил эту инструкцию.</p>
+<div class="warn">🚨 В шаге 3 скачивается <b>закрытый ключ</b>. Он отдаётся только команде из шага 4: ИИ-агенту файл и его содержимое не пересылай.</div>
+<p class="meta">Переключатель <b>EN / RU</b> справа вверху — язык консоли Firebase, выбери тот, что у тебя на экране. Составлена 2026-10-10 по документации Firebase, экраны не сверены: если надпись отличается — ищи по смыслу и расположению. Рисунки упрощены, обведено то, что нажимать или заполнять. Кнопка «Копировать» кладёт значение в буфер обмена.</p>
+
+<section class="step" id="project">
+  <h2><span class="n">1</span>Подключить Firebase к проекту {{project_name}}</h2>
+  <p>Открой <a class="mono" href="https://console.firebase.google.com/" target="_blank" rel="noopener">https://console.firebase.google.com/</a> под тем же аккаунтом Google, которым заводил проект <b>{{project_name}}</b> в Google Cloud. Проект <b>{{project_name}}</b> уже есть в списке проектов Firebase — открой его и переходи к шагу 2.</p>
+  <p>Нет — под карточкой создания проекта нажми ссылку <b>{{console-firebase:add-firebase-to-gcp}}</b>. Новый проект не создавай: Firebase подключается к уже существующему.</p>
+  <div class="screen">
+    <div class="bar"><span class="title">Firebase</span></div>
+    <div class="body">
+      <div class="fld hit"><div class="label">{{console-firebase:select-a-project}}</div><div class="input"><span class="v">{{project_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <span class="btn main hit">{{console-firebase:continue}}</span>
+      <div class="row" style="margin-top:12px"><span class="hit">○ {{console-firebase:enable-google-analytics}}</span> <span class="opt">выключить</span></div>
+      <span class="btn main hit">{{console-firebase:continue}}</span>
+    </div>
+  </div>
+  <p>По пути Firebase попросит принять условия и подтвердить тариф — соглашайся с тарифом <b>Spark</b>, платёжный аккаунт не нужен. Помощник Gemini — как предложено, на работу не влияет. Удалось, если открылась страница проекта <b>{{project_name}}</b> в Firebase.</p>
+</section>
+
+<section class="step" id="app">
+  <h2><span class="n">2</span>Завести приложение Android</h2>
+  <p>На странице проекта нажми <b>+ {{console-firebase:add-app}}</b> и выбери значок Android.</p>
+  <div class="screen">
+    <div class="bar"><span class="title">{{console-firebase:register-app}}</span></div>
+    <div class="body">
+      <div class="fld hit"><div class="label">{{console-firebase:android-package-name}}</div><div class="input"><span class="v">{{package_name}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">{{console-firebase:app-nickname}} <span class="opt">можно оставить пустым</span></div><div class="input"><span class="v">{{app_nickname}}</span><button class="copy" type="button">Копировать</button></div></div>
+      <div class="fld"><div class="label">{{console-firebase:debug-signing-certificate}} <span class="opt">оставь пустым</span></div><div class="input"><span class="empty"></span></div></div>
+      <span class="btn main hit">{{console-firebase:register-app}}</span>
+    </div>
+  </div>
+  <p>Следующим экраном нажми <b>{{console-firebase:download-google-services-json}}</b> — в «Загрузках» появится <span class="mono">google-services.json</span>. Остальные шаги мастера про правку сборки пропусти: <b>{{console-firebase:next}}</b>, <b>{{console-firebase:next}}</b>, <b>{{console-firebase:continue-to-console}}</b> — сборку ИИ-агент уже поправил.</p>
+  <div class="screen">
+    <div class="bar"><span class="title">google-services.json</span></div>
+    <div class="body"><span class="btn main hit">{{console-firebase:download-google-services-json}}</span> <span class="btn">{{console-firebase:next}}</span></div>
+  </div>
+  <p class="caption">Firebase отвечает, что такое приложение уже есть, — значит, его заводили раньше: шестерёнка рядом с «Project Overview» → <b>{{console-firebase:project-settings}}</b>, внизу вкладки карточка приложения {{package_name}} и в ней та же кнопка скачивания.</p>
+</section>
+
+<section class="step" id="key">
+  <h2><span class="n">3</span>Скачать ключ для отправки уведомлений</h2>
+  <p>Шестерёнка рядом с «Project Overview» слева вверху → <b>{{console-firebase:project-settings}}</b> → вкладка <b>{{console-firebase:service-accounts}}</b>.</p>
+  <div class="screen">
+    <div class="bar"><span class="title">{{console-firebase:project-settings}}</span><span class="caption">… · {{console-firebase:cloud-messaging}} · <span class="hit">{{console-firebase:service-accounts}}</span></span></div>
+    <div class="body">
+      <div class="fld"><div class="label">{{console-firebase:firebase-admin-sdk}}</div></div>
+      <span class="btn main hit">{{console-firebase:generate-new-private-key}}</span>
+      <div class="row" style="margin-top:12px"><span class="caption">окно подтверждения:</span> <span class="btn main hit">{{console-firebase:generate-key}}</span></div>
+    </div>
+  </div>
+  <p>В «Загрузках» появится файл вида <span class="mono">{{project_name}}-firebase-adminsdk-….json</span>. Каждое нажатие создаёт новый ключ — нажимай один раз.</p>
+</section>
+
+<section class="step" id="save">
+  <h2><span class="n">4</span>Сохранить оба файла командой</h2>
+  <p>Открой терминал и запусти — команда сама найдёт оба файла в «Загрузках»:</p>
+  <div class="input"><span class="v">{{save_command}}</span><button class="copy" type="button">Копировать</button></div>
+  <p>Удалось, если команда напечатала строку, начинающуюся с <b>ГОТОВО</b>. Скачанные файлы команда удаляет сама — ключ остаётся только в хранилище.</p>
+  <p class="caption">Файлы лежат не в «Загрузках» — допиши к команде через пробел пути к обоим файлам, в любом порядке.</p>
+</section>
+
+<section class="step" id="result">
+  <h2>Вернуть ИИ-агенту</h2>
+  <p>Напиши ИИ-агенту:</p>
+  <div class="input"><span class="v">Firebase для {{app_nickname}} сохранён</span><button class="copy" type="button">Копировать</button></div>
+  <p>Если нет:</p>
+  <div class="table"><table>
+    <tr><th>Что видно</th><th>Что делать</th></tr>
+    <tr><td>команда из шага 4 напечатала ошибку</td><td>напиши ИИ-агенту, что команда отказала, — текст ошибки он прочитает в журнале сам. Файлы и их содержимое не пересылай</td></tr>
+    <tr><td>проекта {{project_name}} нет в списке шага 1</td><td>войди аккаунтом Google, которым заводил проект в Google Cloud, и открой консоль заново</td></tr>
+    <tr><td>при создании ключа — «Key creation is disabled» или другой отказ</td><td>перешли ИИ-агенту текст сообщения целиком</td></tr>
+    <tr><td>экран на каком-то шаге выглядит иначе и нужного поля не найти</td><td>напиши ИИ-агенту номер шага и надписи, которые видишь</td></tr>
+  </table></div>
+</section>
+</main>
+<script>
+  document.querySelectorAll("button.copy").forEach(button => button.addEventListener("click", async () => {
+    const value = button.previousElementSibling;
+    try {
+      await navigator.clipboard.writeText(value.textContent);
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(value);
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand("copy");
+      selection.removeAllRanges();
+    }
+    button.textContent = "Скопировано";
+    button.classList.add("done");
+    setTimeout(() => { button.textContent = "Копировать"; button.classList.remove("done"); }, 1500);
+  }));
+  document.querySelectorAll(".langs button").forEach(button => button.addEventListener("click", () => {
+    document.documentElement.dataset.lang = button.dataset.set;
+  }));
+</script>
+</body>
+</html>

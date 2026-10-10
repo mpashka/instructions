@@ -1,0 +1,27 @@
+# Описание диалогов консоли Firebase: универсальное имя → надпись на языке интерфейса.
+# Шаблон инструкции ссылается на надпись как {{console-firebase:<имя>}} — README репозитория.
+#
+# 🚨 Надписи взяты из документации Firebase, с живым экраном их не сверяли: ИИ-агент в консоль не
+# заходит. Первый человек, прошедший инструкцию, сверяет их и правит этот файл с датой `checked`.
+site: console.firebase.google.com
+checked: 2026-10-10
+languages: [en, ru]
+labels:
+  add-app: {en: "Add app", ru: "Добавить приложение"}
+  add-firebase-to-gcp: {en: "Add Firebase to Google Cloud project", ru: "Добавить Firebase в проект Google Cloud"}
+  android-package-name: {en: "Android package name", ru: "Название пакета Android"}
+  app-nickname: {en: "App nickname", ru: "Псевдоним приложения"}
+  cloud-messaging: {en: "Cloud Messaging", ru: "Cloud Messaging"}
+  continue: {en: "Continue", ru: "Продолжить"}
+  continue-to-console: {en: "Continue to console", ru: "Перейти в консоль"}
+  debug-signing-certificate: {en: "Debug signing certificate SHA-1", ru: "Сертификат подписи отладки SHA-1"}
+  download-google-services-json: {en: "Download google-services.json", ru: "Скачать google-services.json"}
+  enable-google-analytics: {en: "Enable Google Analytics for this project", ru: "Включить Google Analytics для этого проекта"}
+  firebase-admin-sdk: {en: "Firebase Admin SDK", ru: "Firebase Admin SDK"}
+  generate-key: {en: "Generate key", ru: "Создать ключ"}
+  generate-new-private-key: {en: "Generate new private key", ru: "Создать новый закрытый ключ"}
+  next: {en: "Next", ru: "Далее"}
+  project-settings: {en: "Project settings", ru: "Настройки проекта"}
+  register-app: {en: "Register app", ru: "Зарегистрировать приложение"}
+  select-a-project: {en: "Select a Google Cloud project", ru: "Выберите проект Google Cloud"}
+  service-accounts: {en: "Service accounts", ru: "Сервисные аккаунты"}

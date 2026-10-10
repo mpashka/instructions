@@ -1,0 +1,14 @@
+title: подключить Firebase к проекту Google Cloud, завести приложение Android для пуш-уведомлений и сохранить его файлы командой
+fields:
+  project_name:
+    about: проект Google Cloud, к которому подключается Firebase (тот же, где OAuth-клиент входа)
+    example: home-apps
+  package_name:
+    about: applicationId приложения Android, ровно как в build.gradle
+    example: org.example.app
+  app_nickname:
+    about: имя приложения в консоли Firebase, видно только в консоли
+    example: Example
+  save_command:
+    about: команда без аргументов, которая находит в «Загрузках» google-services.json и ключ сервисного аккаунта, сохраняет оба и удаляет скачанное
+    example: ~/bin/save-firebase-files
