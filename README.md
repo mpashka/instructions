@@ -128,5 +128,6 @@ labels:
 - [cloudflare-web-analytics](cloudflare-web-analytics/) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
 - [llm-chat-answer](llm-chat-answer/) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
 - [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку (HTML)
+- [yandex-app-password](yandex-app-password/) — пароль приложения Яндекса типа «Файлы (WebDAV)» для доступа программы к Диску, запись командой (HTML)
 - [yandex-login-client](yandex-login-client/) — завести приложение Яндекс ID для входа на сайт, ключи — командой в терминале (HTML)
 - [yandex-oauth-client-fix](yandex-oauth-client-fix/) — вход через Яндекс отклонён: добавить приложению адрес возврата (HTML)
