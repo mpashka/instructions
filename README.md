@@ -127,6 +127,7 @@ labels:
 - [google-oauth-client-fix](google-oauth-client-fix/) — вход через Google отклонён: `redirect_uri_mismatch`, тестовые пользователи (HTML, EN/RU)
 - [cloudflare-web-analytics](cloudflare-web-analytics/) — завести сайт в Cloudflare Web Analytics и получить токен счётчика
 - [llm-chat-answer](llm-chat-answer/) — вставить готовый промпт в чат нейросети и сохранить ответ файлом
+- [mailru-app-password](mailru-app-password/) — пароль внешнего приложения Mail.ru с полным доступом к Почте, Облаку, Календарю для доступа программы к Облаку, запись командой (HTML)
 - [xiaomi-adb-install](xiaomi-adb-install/) — разрешить `adb install` на телефоне Xiaomi и подтвердить установку (HTML)
 - [yandex-app-password](yandex-app-password/) — пароль приложения Яндекса типа «Файлы (WebDAV)» для доступа программы к Диску, запись командой (HTML)
 - [yandex-login-client](yandex-login-client/) — завести приложение Яндекс ID для входа на сайт, ключи — командой в терминале (HTML)
